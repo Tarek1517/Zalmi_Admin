@@ -16,7 +16,7 @@ const router = createRouter({
         {
           path: "warehouse-overview",
           name: "WarehouseOverview",
-          component: () => import("@/views/Warehouse-Overview/WarehouseOverviewPage.vue"),
+          component: () => import("@/views/Warehouse/WarehousePage.vue"),
         },
         {
           path: "orders",
@@ -24,9 +24,14 @@ const router = createRouter({
           component: () => import("@/views/Orders/OrdersPage.vue"),
         },
         {
-          path: "revenue",
-          name: "Revenue",
-          component: () => import("@/views/Revenue/RevenuePage.vue"),
+          path: "vendor-approval",
+          name: "VendorApproval",
+          component: () => import("@/views/Vendor/VendorApprovalPage.vue"),
+        },
+        {
+          path: "vendor-list",
+          name: "VendorList",
+          component: () => import("@/views/Vendor/index.vue"),
         },
         {
           path: "settings",
@@ -34,29 +39,62 @@ const router = createRouter({
           component: () => import("@/views/Settings/SettingsPage.vue"),
         },
         {
-          path: "tracking-inventory",
-          name: "InventoryTracking",
-          component: () => import("@/views/InventoryTracking/InventoryTrackingPage.vue"),
+          path: "affiliate-approval",
+          name: "AffiliateApproval",
+          component: () =>
+            import("@/views/Affiliate/AffiliateApprovalPage.vue"),
         },
         {
-          path: "stock-management",
-          name: "StockManagement",
-          component: () => import("@/views/Stock-Management/StockManagementPage.vue"),
+          path: "affiliate-list",
+          name: "AffiliateList",
+          component: () => import("@/views/Affiliate/index.vue"),
         },
+
         {
-          path: "shipping-labels",
-          name: "ShippingLabels",
-          component: () => import("@/views/Shipping-Labels/ShippingLabelsPage.vue"),
+          path: "send-mail",
+          name: "SendMail",
+          component: () => import("@/views/Mail/index.vue"),
         },
+
         {
-          path: "return-management",
-          name: "ReturnManagement",
-          component: () => import("@/views/Return-Management/ReturnManagementPage.vue"),
+          path: "categories",
+          name: "Categories",
+          component: () => import("@/views/Category/index.vue"),
         },
+
+        {
+          path: "campaign",
+          name: "Campaign",
+          component: () => import("@/views/Campaign/index.vue"),
+        },
+
+        {
+          path: "flash-sale",
+          name: "FlashSale",
+          component: () => import("@/views/Flash/index.vue"),
+        },
+
+        {
+          path: "promotions",
+          name: "Promotions",
+          component: () => import("@/views/Promotion/index.vue"),
+        },
+
+        {
+          path: "programs",
+          name: "Programs",
+          component: () => import("@/views/Program/index.vue"),
+        },
+
+        {
+          path: "system-settings",
+          name: "SystemSettings",
+          component: () => import("@/views/System/SystemSettings.vue"),
+        },
+        
       ],
     },
     { path: "/", name: "Home", component: () => import("@/views/index.vue") },
-    
   ],
 });
 

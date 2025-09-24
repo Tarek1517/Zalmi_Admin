@@ -10,7 +10,7 @@ import SidebarNav from "@/components/Dashboard/SidebarNav.vue";
         <ProfileHeader />
         <div class="flex flex-col lg:flex-row gap-8 mb-12">
           <!-- Sidebar -->
-          <div class="lg:w-64 shrink-0">
+          <div class="shrink-0">
             <SidebarNav />
           </div>
           <!-- Main Content -->

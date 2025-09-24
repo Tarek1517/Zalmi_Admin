@@ -3,14 +3,15 @@
     <div class="flex justify-between items-center mb-6">
       <div>
         <h2 class="text-2xl font-bold text-gray-900">Order Management</h2>
-        <p class="text-sm text-gray-600 mt-1">Monitor and manage all system orders</p>
+        <p class="text-sm text-gray-600 mt-1">
+          Monitor and manage all system orders
+        </p>
       </div>
       <div class="flex items-center gap-3">
         <button
           class="flex items-center gap-2 px-4 py-2.5 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
         >
           <Icon name="ph:export" class="text-lg" />
-        
         </button>
         <button
           class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
@@ -23,10 +24,16 @@
 
     <!-- Order Stats -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <div class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-blue-500/10 to-blue-600/20">
+      <div
+        class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-blue-500/10 to-blue-600/20"
+      >
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-semibold tracking-wide uppercase text-blue-600/80">Total Orders</p>
+            <p
+              class="text-sm font-semibold tracking-wide uppercase text-blue-600/80"
+            >
+              Total Orders
+            </p>
             <p class="text-3xl font-bold text-blue-900">2,847</p>
             <p class="text-xs font-medium mt-2 flex items-center text-blue-600">
               <span class="inline-flex items-center">
@@ -41,15 +48,21 @@
         </div>
       </div>
 
-      <div class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-amber-500/10 to-amber-600/20">
+      <div
+        class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-amber-500/10 to-amber-600/20"
+      >
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-semibold tracking-wide uppercase text-amber-600/80">Pending Processing</p>
+            <p
+              class="text-sm font-semibold tracking-wide uppercase text-amber-600/80"
+            >
+              Pending Processing
+            </p>
             <p class="text-3xl font-bold text-amber-900">156</p>
-            <p class="text-xs font-medium mt-2 flex items-center text-amber-600">
-              <span class="inline-flex items-center">
-                Awaiting action
-              </span>
+            <p
+              class="text-xs font-medium mt-2 flex items-center text-amber-600"
+            >
+              <span class="inline-flex items-center"> Awaiting action </span>
             </p>
           </div>
           <div class="p-3 rounded-xl shadow-md bg-amber-500/20 text-amber-600">
@@ -58,37 +71,57 @@
         </div>
       </div>
 
-      <div class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-emerald-500/10 to-emerald-600/20">
+      <div
+        class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-emerald-500/10 to-emerald-600/20"
+      >
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-semibold tracking-wide uppercase text-emerald-600/80">Revenue Today</p>
+            <p
+              class="text-sm font-semibold tracking-wide uppercase text-emerald-600/80"
+            >
+              Revenue Today
+            </p>
             <p class="text-3xl font-bold text-emerald-900">$24.8K</p>
-            <p class="text-xs font-medium mt-2 flex items-center text-emerald-600">
+            <p
+              class="text-xs font-medium mt-2 flex items-center text-emerald-600"
+            >
               <span class="inline-flex items-center">
                 <Icon name="ph:currency-dollar" class="mr-1" />
                 +12% daily growth
               </span>
             </p>
           </div>
-          <div class="p-3 rounded-xl shadow-md bg-emerald-500/20 text-emerald-600">
+          <div
+            class="p-3 rounded-xl shadow-md bg-emerald-500/20 text-emerald-600"
+          >
             <Icon name="ph:currency-dollar" class="text-2xl" />
           </div>
         </div>
       </div>
 
-      <div class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-violet-500/10 to-violet-600/20">
+      <div
+        class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-violet-500/10 to-violet-600/20"
+      >
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-semibold tracking-wide uppercase text-violet-600/80">Avg. Order Value</p>
+            <p
+              class="text-sm font-semibold tracking-wide uppercase text-violet-600/80"
+            >
+              Avg. Order Value
+            </p>
             <p class="text-3xl font-bold text-violet-900">$89.42</p>
-            <p class="text-xs font-medium mt-2 flex items-center text-violet-600">
+            <p
+              class="text-xs font-medium mt-2 flex items-center text-violet-600"
+            >
               <span class="inline-flex items-center">
                 <Icon name="ph:trend-up" class="mr-1" />
                 +5.2% increase
               </span>
             </p>
           </div>
-          <div class="p-3 rounded-xl shadow-md bg-violet-500/20 text-violet-600">
+          <div
+            class="p-3 rounded-xl shadow-md bg-violet-500/20 text-violet-600"
+          >
             <Icon name="ph:chart-line" class="text-2xl" />
           </div>
         </div>
@@ -97,12 +130,20 @@
 
     <!-- Filters and Search -->
     <div class="bg-white rounded-2xl py-6 mb-6 border-0">
-      <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-        <h3 class="text-lg font-semibold text-gray-900">Order Management <span class="text-gray-500">({{ filteredOrders.length }})</span></h3>
-        
+      <div
+        class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between"
+      >
+        <h3 class="text-lg font-semibold text-gray-900">
+          Order Management
+          <span class="text-gray-500">({{ filteredOrders.length }})</span>
+        </h3>
+
         <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
           <div class="relative flex-1">
-            <Icon name="ph:magnifying-glass" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
+            <Icon
+              name="ph:magnifying-glass"
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg"
+            />
             <input
               type="text"
               placeholder="Search orders, customers, products..."
@@ -110,8 +151,11 @@
               class="pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
-          
-          <select v-model="statusFilter" class="px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+
+          <select
+            v-model="statusFilter"
+            class="px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
             <option value="">All Status</option>
             <option value="Pending">Pending</option>
             <option value="Processing">Processing</option>
@@ -121,8 +165,11 @@
             <option value="Cancelled">Cancelled</option>
             <option value="Refunded">Refunded</option>
           </select>
-          
-          <select v-model="channelFilter" class="px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+
+          <select
+            v-model="channelFilter"
+            class="px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
             <option value="">All Channels</option>
             <option value="Online Store">Online Store</option>
             <option value="Mobile App">Mobile App</option>
@@ -131,7 +178,9 @@
             <option value="Marketplace">Marketplace</option>
           </select>
 
-          <button class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm transition-colors">
+          <button
+            class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm transition-colors"
+          >
             <Icon name="ph:funnel" class="text-lg" />
           </button>
         </div>
@@ -144,31 +193,49 @@
         <table class="w-full">
           <thead class="bg-orange-100">
             <tr>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
+              >
                 Order Details
               </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
+              >
                 Customer
               </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
+              >
                 Date & Channel
               </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
+              >
                 Items & Value
               </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
+              >
                 Payment
               </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
+              >
                 Status
               </th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
+              >
                 Actions
               </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200/80">
-            <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-gray-50/50 transition-colors duration-150">
+            <tr
+              v-for="order in filteredOrders"
+              :key="order.id"
+              class="hover:bg-gray-50/50 transition-colors duration-150"
+            >
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm font-semibold text-blue-600">
                   {{ order.order_code }}
@@ -195,7 +262,9 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                  <span
+                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+                  >
                     {{ order.items }} items
                   </span>
                   <span class="text-sm font-semibold text-gray-900">
@@ -207,7 +276,10 @@
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium" :class="getPaymentClass(order.payment_status)">
+                <span
+                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                  :class="getPaymentClass(order.payment_status)"
+                >
                   {{ order.payment_status }}
                 </span>
                 <div class="text-xs text-gray-500 mt-1">
@@ -232,10 +304,16 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center gap-2">
-                  <button @click="viewOrder(order)" class="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors">
+                  <button
+                    @click="viewOrder(order)"
+                    class="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                  >
                     <Icon name="ph:eye" class="text-lg" />
                   </button>
-                  <button @click="editOrder(order)" class="p-1.5 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors">
+                  <button
+                    @click="editOrder(order)"
+                    class="p-1.5 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
+                  >
                     <Icon name="ph:pencil" class="text-lg" />
                   </button>
                   <div class="relative">
@@ -243,7 +321,14 @@
                       @click="toggleMenu(order.id)"
                       class="p-1.5 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-colors"
                     >
-                      <Icon name="ph:dots-three-vertical" class="text-lg" />
+                      <Icon
+                        :name="
+                          openMenuId === order.id
+                            ? 'heroicons:x-mark'
+                            : 'ph:dots-three-vertical'
+                        "
+                        class="text-lg"
+                      />
                     </button>
 
                     <div
@@ -286,11 +371,14 @@
 
       <!-- Pagination -->
       <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
           <div class="text-sm text-gray-700">
             Showing <span class="font-semibold">1</span> to
             <span class="font-semibold">10</span> of
-            <span class="font-semibold">{{ filteredOrders.length }}</span> results
+            <span class="font-semibold">{{ filteredOrders.length }}</span>
+            results
           </div>
           <div class="flex items-center gap-2">
             <button
@@ -298,7 +386,9 @@
             >
               Previous
             </button>
-            <button class="px-3.5 py-1.5 bg-primary text-white rounded-lg text-sm font-semibold">
+            <button
+              class="px-3.5 py-1.5 bg-primary text-white rounded-lg text-sm font-semibold"
+            >
               1
             </button>
             <button
@@ -347,7 +437,7 @@ const orders = ref([
     payment_status: "Paid",
     payment_method: "Credit Card",
     channel: "Online Store",
-    priority: "High"
+    priority: "High",
   },
   {
     id: 2,
@@ -363,7 +453,7 @@ const orders = ref([
     payment_status: "Paid",
     payment_method: "PayPal",
     channel: "Mobile App",
-    priority: "Medium"
+    priority: "Medium",
   },
   {
     id: 3,
@@ -379,7 +469,7 @@ const orders = ref([
     payment_status: "Pending",
     payment_method: "Bank Transfer",
     channel: "Online Store",
-    priority: "High"
+    priority: "High",
   },
   {
     id: 4,
@@ -395,7 +485,7 @@ const orders = ref([
     payment_status: "Paid",
     payment_method: "Credit Card",
     channel: "Retail Store",
-    priority: "Low"
+    priority: "Low",
   },
   {
     id: 5,
@@ -411,39 +501,44 @@ const orders = ref([
     payment_status: "Refunded",
     payment_method: "Credit Card",
     channel: "Marketplace",
-    priority: "Medium"
-  }
+    priority: "Medium",
+  },
 ]);
 
 // Filtered orders
 const filteredOrders = computed(() => {
-  return orders.value.filter(order => {
-    const matchesSearch = searchQuery.value === "" || 
-      order.order_code.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+  return orders.value.filter((order) => {
+    const matchesSearch =
+      searchQuery.value === "" ||
+      order.order_code
+        .toLowerCase()
+        .includes(searchQuery.value.toLowerCase()) ||
       order.customer.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       order.email.toLowerCase().includes(searchQuery.value.toLowerCase());
-    
-    const matchesStatus = statusFilter.value === "" || order.status === statusFilter.value;
-    const matchesChannel = channelFilter.value === "" || order.channel === channelFilter.value;
-    
+
+    const matchesStatus =
+      statusFilter.value === "" || order.status === statusFilter.value;
+    const matchesChannel =
+      channelFilter.value === "" || order.channel === channelFilter.value;
+
     return matchesSearch && matchesStatus && matchesChannel;
   });
 });
 
 // Format date
 const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
 };
 
 // Format time
 const formatTime = (dateString) => {
-  return new Date(dateString).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit'
+  return new Date(dateString).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
@@ -464,7 +559,7 @@ const getStatusClass = (status) => {
     Shipped: "bg-green-100 text-green-800",
     Delivered: "bg-purple-100 text-purple-800",
     Cancelled: "bg-red-100 text-red-800",
-    Refunded: "bg-orange-100 text-orange-800"
+    Refunded: "bg-orange-100 text-orange-800",
   };
   return classes[status] || "bg-gray-100 text-gray-800";
 };
@@ -475,7 +570,7 @@ const getPaymentClass = (paymentStatus) => {
     Paid: "bg-green-100 text-green-800",
     Pending: "bg-yellow-100 text-yellow-800",
     Failed: "bg-red-100 text-red-800",
-    Refunded: "bg-orange-100 text-orange-800"
+    Refunded: "bg-orange-100 text-orange-800",
   };
   return classes[paymentStatus] || "bg-gray-100 text-gray-800";
 };

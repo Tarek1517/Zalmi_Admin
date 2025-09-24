@@ -1,3 +1,201 @@
+<script setup>
+import { ref, computed } from "vue";
+import Modal from "@/components/Modal.vue";
+// Warehouse data
+const warehouses = ref([
+  {
+    id: 1,
+    name: "Main Distribution Center",
+    location: "New York, NY",
+    status: "Operational",
+    capacity: 5000,
+    used: 3250,
+    lowStockItems: 12,
+    incomingShipments: 5,
+    outgoingShipments: 23,
+    temperature: "Controlled (18-22°C)",
+    manager: "Sarah Johnson",
+    lastUpdated: "2 hours ago",
+    password: "secure123",
+  },
+  {
+    id: 2,
+    name: "West Coast Facility",
+    location: "Los Angeles, CA",
+    status: "Operational",
+    capacity: 3500,
+    used: 2450,
+    lowStockItems: 8,
+    incomingShipments: 3,
+    outgoingShipments: 18,
+    temperature: "Dry Storage",
+    manager: "Michael Chen",
+    lastUpdated: "30 minutes ago",
+    password: "secure123",
+  },
+  {
+    id: 3,
+    name: "Midwest Hub",
+    location: "Chicago, IL",
+    status: "Maintenance",
+    capacity: 2800,
+    used: 1950,
+    lowStockItems: 5,
+    incomingShipments: 2,
+    outgoingShipments: 12,
+    temperature: "Refrigerated (2-8°C)",
+    manager: "Emma Wilson",
+    lastUpdated: "5 hours ago",
+    password: "secure123",
+  },
+  {
+    id: 4,
+    name: "Southern Distribution",
+    location: "Dallas, TX",
+    status: "Operational",
+    capacity: 4200,
+    used: 3100,
+    lowStockItems: 15,
+    incomingShipments: 7,
+    outgoingShipments: 20,
+    temperature: "Dry Storage",
+    manager: "David Brown",
+    lastUpdated: "1 hour ago",
+    password: "secure123",
+  },
+]);
+
+// Selected warehouse
+const selectedWarehouse = ref(warehouses.value[0]);
+
+// Quick stats for all warehouses
+const totalStats = computed(() => {
+  return {
+    totalCapacity: warehouses.value.reduce((sum, w) => sum + w.capacity, 0),
+    totalUsed: warehouses.value.reduce((sum, w) => sum + w.used, 0),
+    totalLowStock: warehouses.value.reduce(
+      (sum, w) => sum + w.lowStockItems,
+      0
+    ),
+    totalIncoming: warehouses.value.reduce(
+      (sum, w) => sum + w.incomingShipments,
+      0
+    ),
+    totalOutgoing: warehouses.value.reduce(
+      (sum, w) => sum + w.outgoingShipments,
+      0
+    ),
+  };
+});
+
+// Warehouse status counts
+const statusCounts = computed(() => {
+  const counts = {
+    operational: 0,
+    maintenance: 0,
+    offline: 0,
+  };
+
+  warehouses.value.forEach((warehouse) => {
+    if (warehouse.status.toLowerCase() === "operational") counts.operational++;
+    else if (warehouse.status.toLowerCase() === "maintenance")
+      counts.maintenance++;
+    else counts.offline++;
+  });
+
+  return counts;
+});
+
+// form for adding a new warehouse
+const form = ref({
+  name: null,
+  location: null,
+  manager: null,
+  password: null,
+});
+
+// form for editing an existing warehouse
+const newItem = ref({
+  id: null,
+  name: null,
+  location: null,
+  manager: null,
+  password: null,
+});
+
+const showPassword = ref(false);
+
+const editWarehouse = (item) => {
+  isEditModalOpened.value = true;
+
+  newItem.value.id = item.id;
+  newItem.value.name = item.name;
+  newItem.value.location = item.location;
+  newItem.value.manager = item.manager;
+
+  // If item has password from API or DB
+  newItem.value.password = item.password || "";
+};
+
+// Select warehouse function
+const selectWarehouse = (warehouse) => {
+  selectedWarehouse.value = warehouse;
+};
+
+// Format capacity percentage
+const capacityPercentage = (warehouse) => {
+  return Math.round((warehouse.used / warehouse.capacity) * 100);
+};
+
+// Capacity status (for color coding)
+const capacityStatus = (percentage) => {
+  if (percentage >= 90) return "critical";
+  if (percentage >= 75) return "warning";
+  return "good";
+};
+
+// model
+const isModalOpened = ref(false);
+const isEditModalOpened = ref(false);
+
+// open/close modal handlers
+const openModal = () => {
+  isModalOpened.value = true;
+};
+
+const closeModal = () => {
+  isModalOpened.value = false;
+  isEditModalOpened.value = false;
+
+  // reset add form
+  form.value = {
+    name: null,
+    location: null,
+    manager: null,
+    password: null,
+  };
+
+  // reset edit form
+  newItem.value = {
+    id: null,
+    name: null,
+    location: null,
+    manager: null,
+    password: null,
+  };
+
+  showPassword.value = false;
+};
+
+// Temperature zones
+const temperatureZones = ref([
+  { name: "Controlled (18-22°C)", percentage: 45, color: "blue" },
+  { name: "Refrigerated (2-8°C)", percentage: 25, color: "green" },
+  { name: "Frozen (-18°C)", percentage: 15, color: "purple" },
+  { name: "Dry Storage", percentage: 15, color: "orange" },
+]);
+</script>
+
 <template>
   <div class="space-y-6">
     <!-- Overall Stats -->
@@ -168,6 +366,7 @@
             <Icon name="ph:export" class="text-lg" />
           </button>
           <button
+            @click="openModal"
             class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
           >
             <Icon name="ph:plus" class="text-lg" />
@@ -259,6 +458,7 @@
 
         <div class="mt-6 pt-4 border-t border-gray-200">
           <button
+            @click="editWarehouse(selectedWarehouse)"
             class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-white rounded-xl transition-colors"
           >
             <Icon name="ph:gear" class="text-lg" />
@@ -382,170 +582,223 @@
         </div>
       </div>
     </div>
-
   </div>
+
+  <Modal
+    title="Add New Warehouse"
+    :isOpen="isModalOpened"
+    @modal-close="closeModal"
+    size="md"
+    overlayClose
+  >
+    <div class="flex flex-col gap-5 pt-3">
+      <!-- Warehouse Name -->
+      <div class="w-full">
+        <label
+          for="warehouseName"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Warehouse Name
+        </label>
+        <input
+          v-model="form.name"
+          type="text"
+          id="warehouseName"
+          class="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+          placeholder="Enter warehouse name"
+        />
+      </div>
+
+      <!-- Location -->
+      <div class="w-full">
+        <label
+          for="location"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Location
+        </label>
+        <input
+          v-model="form.location"
+          type="text"
+          id="location"
+          class="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+          placeholder="Enter location"
+        />
+      </div>
+
+      <!-- Manager -->
+      <div class="w-full">
+        <label
+          for="manager"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Manager
+        </label>
+        <input
+          v-model="form.manager"
+          type="text"
+          id="manager"
+          class="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+          placeholder="Enter manager name"
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="w-full">
+        <label
+          for="password"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Password
+        </label>
+        <div class="relative">
+          <input
+            v-model="form.password"
+            :type="showPassword ? 'text' : 'password'"
+            id="password"
+            class="w-full px-4 py-3 pr-10 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+            placeholder="Enter password"
+          />
+          <button
+            type="button"
+            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-blue-600 transition-colors"
+            @click="showPassword = !showPassword"
+          >
+            <Icon
+              :name="showPassword ? 'mdi:eye-off' : 'mdi:eye'"
+              class="text-lg"
+            />
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="w-full flex justify-end gap-3 pt-3">
+        <button
+          @click="closeModal"
+          class="p-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white shadow-md hover:from-rose-600 hover:to-rose-700 hover:shadow-lg transform hover:scale-105 transition-all duration-300 group"
+        >
+          <Icon
+            name="material-symbols:close-rounded"
+            class="text-white text-2xl group-hover:rotate-90 transition-transform duration-300"
+          />
+        </button>
+        <button
+          @click="onSubmit"
+          class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-secondary text-white hover:from-secondary hover:to-primary transition-all duration-200 shadow-md hover:shadow-lg"
+        >
+          Save Warehouse
+        </button>
+      </div>
+    </div>
+  </Modal>
+
+  <Modal
+    title="Edit Warehouse"
+    :isOpen="isEditModalOpened"
+    @modal-close="closeModal"
+    size="md"
+    overlayClose
+  >
+    <div class="flex flex-col gap-5 pt-3">
+      <!-- Warehouse Name -->
+      <div class="w-full">
+        <label
+          for="editWarehouseName"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Warehouse Name
+        </label>
+        <input
+          v-model="newItem.name"
+          type="text"
+          id="editWarehouseName"
+          class="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+          placeholder="Enter warehouse name"
+        />
+      </div>
+
+      <!-- Location -->
+      <div class="w-full">
+        <label
+          for="editLocation"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Location
+        </label>
+        <input
+          v-model="newItem.location"
+          type="text"
+          id="editLocation"
+          class="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+          placeholder="Enter location"
+        />
+      </div>
+
+      <!-- Manager -->
+      <div class="w-full">
+        <label
+          for="editManager"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Manager
+        </label>
+        <input
+          v-model="newItem.manager"
+          type="text"
+          id="editManager"
+          class="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+          placeholder="Enter manager name"
+        />
+      </div>
+
+      <!-- Password with Toggle -->
+      <div class="w-full">
+        <label
+          for="editPassword"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Password
+        </label>
+        <div class="relative">
+          <input
+            v-model="newItem.password"
+            :type="showPassword ? 'text' : 'password'"
+            id="editPassword"
+            class="w-full px-4 py-3 pr-10 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+            placeholder="Enter password"
+          />
+          <button
+            type="button"
+            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-blue-600 transition-colors"
+            @click="showPassword = !showPassword"
+          >
+            <Icon
+              :name="showPassword ? 'mdi:eye-off' : 'mdi:eye'"
+              class="text-lg"
+            />
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="w-full flex justify-end gap-3 pt-3">
+        <button
+          @click="closeModal"
+          class="p-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white shadow-md hover:from-rose-600 hover:to-rose-700 hover:shadow-lg transform hover:scale-105 transition-all duration-300 group"
+        >
+          <Icon
+            name="material-symbols:close-rounded"
+            class="text-white text-2xl group-hover:rotate-90 transition-transform duration-300"
+          />
+        </button>
+        <button
+          @click="onUpdate(newItem.id)"
+          class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg"
+        >
+          Update Warehouse
+        </button>
+      </div>
+    </div>
+  </Modal>
 </template>
-
-<script setup>
-import { ref, computed } from "vue";
-
-// Warehouse data
-const warehouses = ref([
-  {
-    id: 1,
-    name: "Main Distribution Center",
-    location: "New York, NY",
-    status: "Operational",
-    capacity: 5000,
-    used: 3250,
-    lowStockItems: 12,
-    incomingShipments: 5,
-    outgoingShipments: 23,
-    temperature: "Controlled (18-22°C)",
-    manager: "Sarah Johnson",
-    lastUpdated: "2 hours ago",
-  },
-  {
-    id: 2,
-    name: "West Coast Facility",
-    location: "Los Angeles, CA",
-    status: "Operational",
-    capacity: 3500,
-    used: 2450,
-    lowStockItems: 8,
-    incomingShipments: 3,
-    outgoingShipments: 18,
-    temperature: "Dry Storage",
-    manager: "Michael Chen",
-    lastUpdated: "30 minutes ago",
-  },
-  {
-    id: 3,
-    name: "Midwest Hub",
-    location: "Chicago, IL",
-    status: "Maintenance",
-    capacity: 2800,
-    used: 1950,
-    lowStockItems: 5,
-    incomingShipments: 2,
-    outgoingShipments: 12,
-    temperature: "Refrigerated (2-8°C)",
-    manager: "Emma Wilson",
-    lastUpdated: "5 hours ago",
-  },
-  {
-    id: 4,
-    name: "Southern Distribution",
-    location: "Dallas, TX",
-    status: "Operational",
-    capacity: 4200,
-    used: 3100,
-    lowStockItems: 15,
-    incomingShipments: 7,
-    outgoingShipments: 20,
-    temperature: "Dry Storage",
-    manager: "David Brown",
-    lastUpdated: "1 hour ago",
-  },
-]);
-
-// Selected warehouse
-const selectedWarehouse = ref(warehouses.value[0]);
-
-// Quick stats for all warehouses
-const totalStats = computed(() => {
-  return {
-    totalCapacity: warehouses.value.reduce((sum, w) => sum + w.capacity, 0),
-    totalUsed: warehouses.value.reduce((sum, w) => sum + w.used, 0),
-    totalLowStock: warehouses.value.reduce(
-      (sum, w) => sum + w.lowStockItems,
-      0
-    ),
-    totalIncoming: warehouses.value.reduce(
-      (sum, w) => sum + w.incomingShipments,
-      0
-    ),
-    totalOutgoing: warehouses.value.reduce(
-      (sum, w) => sum + w.outgoingShipments,
-      0
-    ),
-  };
-});
-
-// Warehouse status counts
-const statusCounts = computed(() => {
-  const counts = {
-    operational: 0,
-    maintenance: 0,
-    offline: 0,
-  };
-
-  warehouses.value.forEach((warehouse) => {
-    if (warehouse.status.toLowerCase() === "operational") counts.operational++;
-    else if (warehouse.status.toLowerCase() === "maintenance")
-      counts.maintenance++;
-    else counts.offline++;
-  });
-
-  return counts;
-});
-
-// Select warehouse function
-const selectWarehouse = (warehouse) => {
-  selectedWarehouse.value = warehouse;
-};
-
-// Format capacity percentage
-const capacityPercentage = (warehouse) => {
-  return Math.round((warehouse.used / warehouse.capacity) * 100);
-};
-
-// Capacity status (for color coding)
-const capacityStatus = (percentage) => {
-  if (percentage >= 90) return "critical";
-  if (percentage >= 75) return "warning";
-  return "good";
-};
-
-// Recent activities for selected warehouse
-const recentActivities = ref([
-  {
-    id: 1,
-    action: "Inventory count completed",
-    time: "2 hours ago",
-    user: "System",
-  },
-  {
-    id: 2,
-    action: "Shipment #SH-7842 received",
-    time: "3 hours ago",
-    user: "John Doe",
-  },
-  {
-    id: 3,
-    action: "Order #ORD-4591 processed",
-    time: "5 hours ago",
-    user: "Sarah Wilson",
-  },
-  {
-    id: 4,
-    action: "Low stock alert for Product #P-8921",
-    time: "8 hours ago",
-    user: "System",
-  },
-  {
-    id: 5,
-    action: "Monthly maintenance completed",
-    time: "1 day ago",
-    user: "Maintenance Team",
-  },
-]);
-
-// Temperature zones
-const temperatureZones = ref([
-  { name: "Controlled (18-22°C)", percentage: 45, color: "blue" },
-  { name: "Refrigerated (2-8°C)", percentage: 25, color: "green" },
-  { name: "Frozen (-18°C)", percentage: 15, color: "purple" },
-  { name: "Dry Storage", percentage: 15, color: "orange" },
-]);
-</script>
