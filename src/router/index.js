@@ -63,9 +63,21 @@ const router = createRouter({
         },
 
         {
+          path: "brand",
+          name: "Brand",
+          component: () => import("@/views/Brand/index.vue"),
+        },
+
+        {
           path: "campaign",
           name: "Campaign",
           component: () => import("@/views/Campaign/index.vue"),
+        },
+
+        {
+          path: "reports",
+          name: "Reports",
+          component: () => import("@/views/Report/index.vue"),
         },
 
         {
@@ -90,6 +102,23 @@ const router = createRouter({
           path: "system-settings",
           name: "SystemSettings",
           component: () => import("@/views/System/SystemSettings.vue"),
+        },
+        {
+          path: "backup",
+          name: "Backup",
+          component: () => import("@/views/System/Backup.vue"),
+        },
+
+        {
+          path: "logs",
+          name: "Logs",
+          component: () => import("@/views/System/SystemLog.vue"),
+        },
+
+        {
+          path: "security",
+          name: "Security",
+          component: () => import("@/views/Security/index.vue"),
         },
         
       ],

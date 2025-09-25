@@ -45,7 +45,7 @@ const rememberMe = ref(false);
               v-model="email"
               type="email"
               placeholder="admin@company.com"
-              class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition-colors"
+              class="block w-full px-4 py-3 border border-primary/25 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition-colors"
             />
           </div>
 
@@ -61,7 +61,7 @@ const rememberMe = ref(false);
               v-model="password"
               type="password"
               placeholder="••••••••"
-              class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition-colors"
+              class="block w-full px-4 py-3 border border-primary/25 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition-colors"
             />
           </div>
 

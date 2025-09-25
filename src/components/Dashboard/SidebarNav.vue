@@ -110,14 +110,14 @@ const toggleSidebar = () => {
         </router-link>
       </li>
 
-      <!-- Orders -->
+      <!-- categories -->
       <li>
         <router-link
           to="/dashboard/categories"
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
             $route.path.startsWith('/dashboard/categories')
-              ? 'bg-gradient-to-r from-orange-50 to-cyan-100 border-l-4 border-cyan-500 text-cyan-700 font-semibold shadow-sm'
+              ? 'bg-gradient-to-r from-cyan-50 to-cyan-100 border-l-4 border-cyan-500 text-cyan-700 font-semibold shadow-sm'
               : 'text-gray-900 hover:text-cyan-600 font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
@@ -136,6 +136,34 @@ const toggleSidebar = () => {
             v-if="
               $route.path.startsWith('/dashboard/categories') && !isCollapsed
             "
+          ></div>
+        </router-link>
+      </li>
+
+      <!-- categories -->
+      <li>
+        <router-link
+          to="/dashboard/brand"
+          class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
+          :class="[
+            $route.path.startsWith('/dashboard/brand')
+              ? 'bg-gradient-to-r from-secondary/5 to-secondary/80 border-l-4 border-secondary text-secondary font-semibold shadow-sm'
+              : 'text-gray-900 hover:text-secondary font-medium hover:translate-x-1',
+            isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
+          ]"
+        >
+          <Icon
+            name="tabler:brand-databricks"
+            class="text-xl text-secondary group-hover:scale-110 transition-transform flex-shrink-0"
+          />
+          <span
+            class="transition-all duration-200 overflow-hidden whitespace-nowrap"
+            :class="isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100 ml-3'"
+            >Brand</span
+          >
+          <div
+            class="w-2 h-2 rounded-full bg-secondary flex-shrink-0 ml-14"
+            v-if="$route.path.startsWith('/dashboard/brand') && !isCollapsed"
           ></div>
         </router-link>
       </li>
@@ -410,7 +438,7 @@ const toggleSidebar = () => {
           @click="isCollapsed ? null : (isSystemLinks = !isSystemLinks)"
         >
           <Icon
-            name="ph:gear-six"
+            name="tdesign:system-setting"
             class="text-xl text-rose-500 group-hover:scale-110 transition-transform flex-shrink-0"
           />
           <span
@@ -453,29 +481,14 @@ const toggleSidebar = () => {
                 System Settings
               </router-link>
             </li>
+
             <li>
               <router-link
-                to="/admin/database"
-                class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm transition-all duration-200 hover:bg-green-50 hover:text-green-700"
-                :class="{
-                  'bg-green-50 text-green-700':
-                    $route.path === '/admin/database',
-                }"
-              >
-                <Icon
-                  name="ph:database"
-                  class="text-lg text-green-700 flex-shrink-0"
-                />
-                Database Management
-              </router-link>
-            </li>
-            <li>
-              <router-link
-                to="/admin/backup"
+                to="/dashboard/backup"
                 class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm transition-all duration-200 hover:bg-orange-50 hover:text-orange-700"
                 :class="{
                   'bg-orange-50 text-orange-700':
-                    $route.path === '/admin/backup',
+                    $route.path === '/dashboard/backup',
                 }"
               >
                 <Icon
@@ -487,10 +500,11 @@ const toggleSidebar = () => {
             </li>
             <li>
               <router-link
-                to="/admin/logs"
+                to="/dashboard/logs"
                 class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm transition-all duration-200 hover:bg-purple-50 hover:text-purple-700"
                 :class="{
-                  'bg-purple-50 text-purple-700': $route.path === '/admin/logs',
+                  'bg-purple-50 text-purple-700':
+                    $route.path === '/dashboard/logs',
                 }"
               >
                 <Icon
@@ -498,22 +512,6 @@ const toggleSidebar = () => {
                   class="text-lg text-purple-700 flex-shrink-0"
                 />
                 System Logs
-              </router-link>
-            </li>
-            <li>
-              <router-link
-                to="/admin/api-settings"
-                class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm transition-all duration-200 hover:bg-cyan-50 hover:text-cyan-700"
-                :class="{
-                  'bg-cyan-50 text-cyan-700':
-                    $route.path === '/admin/api-settings',
-                }"
-              >
-                <Icon
-                  name="ph:code"
-                  class="text-lg text-cyan-700 flex-shrink-0"
-                />
-                API Settings
               </router-link>
             </li>
           </ul>
@@ -616,7 +614,7 @@ const toggleSidebar = () => {
             >Orders</span
           >
           <div
-            class="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 ml-20"
+            class="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0 ml-16"
             v-if="$route.path.startsWith('/dashboard/orders') && !isCollapsed"
           ></div>
         </router-link>
@@ -686,17 +684,17 @@ const toggleSidebar = () => {
       <!-- Reports & Analytics -->
       <li>
         <router-link
-          to="/admin/reports"
+          to="/dashboard/reports"
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
-            $route.path.startsWith('/admin/reports')
+            $route.path.startsWith('/dashboard/reports')
               ? 'bg-gradient-to-r from-cyan-50 to-cyan-100 border-l-4 border-cyan-500 text-cyan-700 font-semibold shadow-sm'
               : 'text-gray-900 hover:text-cyan-600 font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
         >
           <Icon
-            name="ph:chart-bar"
+            name="material-symbols:add-chart"
             class="text-xl text-cyan-500 group-hover:scale-110 transition-transform flex-shrink-0"
           />
           <span
@@ -706,7 +704,7 @@ const toggleSidebar = () => {
           >
           <div
             class="w-2 h-2 rounded-full bg-cyan-500 flex-shrink-0"
-            v-if="$route.path.startsWith('/admin/reports') && !isCollapsed"
+            v-if="$route.path.startsWith('/dashboard/reports') && !isCollapsed"
           ></div>
         </router-link>
       </li>
@@ -714,17 +712,17 @@ const toggleSidebar = () => {
       <!-- Security Center -->
       <li>
         <router-link
-          to="/admin/security"
+          to="/dashboard/security"
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
-            $route.path.startsWith('/admin/security')
+            $route.path.startsWith('/dashboard/security')
               ? 'bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-500 text-red-700 font-semibold shadow-sm'
               : 'text-gray-900 hover:text-red-600 font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
         >
           <Icon
-            name="ph:shield"
+            name="mdi:shield-lock"
             class="text-xl text-red-500 group-hover:scale-110 transition-transform flex-shrink-0"
           />
           <span
@@ -734,7 +732,7 @@ const toggleSidebar = () => {
           >
           <div
             class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"
-            v-if="$route.path.startsWith('/admin/security') && !isCollapsed"
+            v-if="$route.path.startsWith('/dashboard/security') && !isCollapsed"
           ></div>
         </router-link>
       </li>

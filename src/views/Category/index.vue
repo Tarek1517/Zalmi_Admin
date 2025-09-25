@@ -444,7 +444,7 @@ watch(search, (newValue) => {
     </div>
     <!-- Header Section -->
     <div
-      class="flex items-center justify-between p-6 bg-white rounded-xl shadow-sm mb-6"
+      class="flex items-center justify-between py-6 bg-white rounded-xl shadow-sm mb-6"
     >
       <div>
         <div class="">

@@ -40,9 +40,9 @@ const sendTestEmail = async () => {
 
 <template>
   <!-- Send Email -->
-  <div class="space-y-6 mt-1">
+  <div class="space-y-6 w-full max-w-3xl mx-auto mt-1">
     <!-- Header -->
-    <div class="flex items-center gap-3">
+    <div class="flex items-center justify-center gap-3 mb-12">
       <div class="p-2 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl">
         <Icon name="lucide:mail" class="w-5 h-5 text-blue-600" />
       </div>
@@ -168,8 +168,6 @@ const sendTestEmail = async () => {
           Send Email
         </button>
       </div>
-
-     
     </div>
   </div>
 </template>
