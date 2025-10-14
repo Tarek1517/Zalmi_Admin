@@ -7,11 +7,11 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 const routeKey = computed(() => route.path + "-" + JSON.stringify(route.query));
 
-import { useAuthStore } from "./stores/useAuthStore";
+import { useAdminStore } from "./stores/useAdminStore";
 import { onMounted } from "vue";
-const authStore = useAuthStore();
+const authStore = useAdminStore();
 onMounted(async () => {
-  await authStore.fetchUser();
+  await authStore.fetchAdmin();
 });
 </script>
 

@@ -1,10 +1,44 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { useAdminStore } from "@/stores/useAdminStore.js";
+import { useRouter } from "vue-router";
+import { toast } from "vue3-toastify";
+const router = useRouter();
+const isForm = ref(false);
 
-// Form state
-const email = ref("");
-const password = ref("");
-const rememberMe = ref(false);
+const adminStore = useAdminStore();
+//Login
+const state = ref({
+  email: null,
+  password: null,
+});
+
+const loading = ref(false);
+
+const handleLogin = async () => {
+  loading.value = true;
+  try {
+    const loginResponse = await adminStore.login(state.value);
+    if (loginResponse) {
+      loading.value = false;
+      toast.success("Login successful!", { autoClose: 1000 });
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
+    }
+  } catch (error) {
+    loading.value = false;
+    toast.error(
+      error.response?.data?.message || "Login failed. Please try again.",
+      { autoClose: 1000 }
+    );
+  }
+};
+onMounted(() => {
+  setTimeout(() => {
+    isForm.value = true;
+  }, 500);
+});
 </script>
 
 <template>
@@ -42,7 +76,7 @@ const rememberMe = ref(false);
             >
             <input
               id="email"
-              v-model="email"
+              v-model="state.email"
               type="email"
               placeholder="admin@company.com"
               class="block w-full px-4 py-3 border border-primary/25 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition-colors"
@@ -58,7 +92,7 @@ const rememberMe = ref(false);
             >
             <input
               id="password"
-              v-model="password"
+              v-model="state.password"
               type="password"
               placeholder="••••••••"
               class="block w-full px-4 py-3 border border-primary/25 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition-colors"
@@ -69,7 +103,6 @@ const rememberMe = ref(false);
           <div class="flex items-center justify-between text-sm">
             <label class="flex items-center">
               <input
-                v-model="rememberMe"
                 type="checkbox"
                 class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
@@ -83,18 +116,19 @@ const rememberMe = ref(false);
           </div>
 
           <!-- Submit -->
-          <!-- <button
+          <button
+            v-if="loading"
+            class="w-full flex justify-center items-center py-3 px-4 rounded-lg shadow-md text-white bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary font-semibold transition-all duration-200 transform hover:scale-[1.02]"
+          >
+            <Icon name="svg-spinners:ring-resize" class="text-3xl" />
+          </button>
+          <button
+            v-else
+            @click="handleLogin"
             class="w-full flex justify-center items-center py-3 px-4 rounded-lg shadow-md text-white bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary font-semibold transition-all duration-200 transform hover:scale-[1.02]"
           >
             Access Admin Dashboard
-          </button> -->
-
-          <RouterLink
-            to="/dashboard"
-            class="w-full flex justify-center items-center py-3 px-4 rounded-lg shadow-md text-white bg-gradient-to-r from-primary/80 to-primary hover:from-secondary hover:to-primary/80 font-semibold transition"
-          >
-            Access Admin Dashboard
-          </RouterLink>
+          </button>
         </div>
 
         <!-- Footer -->

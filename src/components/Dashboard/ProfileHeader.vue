@@ -1,4 +1,7 @@
-<script setup></script>
+<script setup>
+import { useAdminStore } from "@/stores/useAdminStore.js";
+const adminStore = useAdminStore();
+</script>
 
 <template>
   <!-- Admin Dashboard Header -->
@@ -277,6 +280,7 @@
               </div>
               <div class="p-2 border-t border-gray-100">
                 <button
+                  @click="adminStore?.logout"
                   class="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"
                 >
                   <svg
