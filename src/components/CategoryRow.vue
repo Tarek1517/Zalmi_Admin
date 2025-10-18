@@ -1,5 +1,12 @@
 <template>
-  <tr class="hover:bg-gray-50 transition-colors">
+  <tr
+    class="transition-colors"
+    :class="{
+      'bg-white': level === 0,
+      'bg-orange-50': level === 1,
+      'bg-cyan-50': level >= 2,
+    }"
+  >
     <td class="px-6 py-4 whitespace-nowrap">
       <div
         class="flex items-center"
@@ -12,7 +19,7 @@
         >
           <Icon
             :name="
-              expandedCategories.has(category.id)
+              expandedCategories.includes(category.id)
                 ? 'heroicons:chevron-down'
                 : 'heroicons:chevron-right'
             "
@@ -42,19 +49,23 @@
       </div>
     </td>
 
-    <td class="px-6 py-4 whitespace-nowrap">
-      <div class="text-sm text-gray-900">{{ category.product_count }}</div>
-    </td>
+   
     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
       {{ category.commission_rate }}%
     </td>
     <td class="px-6 py-4 whitespace-nowrap">
       <span
-        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+        :class="[
+          'px-2 inline-flex text-xs leading-5 font-semibold rounded-full',
+          category.status == 1
+            ? 'bg-green-100 text-green-800'
+            : 'bg-red-100 text-red-800',
+        ]"
       >
-        {{ category.status }}
+        {{ category.status == 1 ? "Active" : "Inactive" }}
       </span>
     </td>
+
     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
       {{ category.order_number }}
     </td>
@@ -78,7 +89,6 @@
     </td>
   </tr>
 
-  <!-- Recursive rendering of children -->
   <CategoryRow
     v-for="child in category.children"
     :key="child.id"
@@ -88,7 +98,7 @@
     @toggle="$emit('toggle', $event)"
     @edit="$emit('edit', $event)"
     @delete="$emit('delete', $event)"
-    v-show="expandedCategories.has(category.id)"
+    v-show="expandedCategories.includes(category.id)"
   />
 </template>
 
@@ -110,4 +120,5 @@ const fullSlug = computed(() => {
   }
   return "/" + slugs.join("/");
 });
+
 </script>

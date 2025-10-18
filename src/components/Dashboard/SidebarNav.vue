@@ -147,7 +147,7 @@ const toggleSidebar = () => {
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
             $route.path.startsWith('/dashboard/brand')
-              ? 'bg-gradient-to-r from-secondary/5 to-secondary/80 border-l-4 border-secondary text-secondary font-semibold shadow-sm'
+              ? 'bg-gradient-to-r from-secondary/5 to-secondary/35 border-l-4 border-secondary text-secondary font-semibold shadow-sm'
               : 'text-gray-900 hover:text-secondary font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"

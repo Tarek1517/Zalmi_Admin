@@ -1,6 +1,7 @@
 <script setup>
 import CategoryRow from "@/components/CategoryRow.vue";
 import Modal from "@/components/Modal.vue";
+import Modal2 from "@/components/Modal2.vue";
 import { ref, onMounted, watch } from "vue";
 import useAxios from "@/composables/useAxios.js";
 import { toast } from "vue3-toastify";
@@ -11,7 +12,7 @@ const { loading, error, sendRequest } = useAxios();
 
 const parentCategories = ref([]);
 const categories = ref([]);
-const expandedCategories = ref(new Set());
+const expandedCategories = ref([]);
 const search = ref("");
 const categoryImg = ref(null);
 
@@ -26,12 +27,12 @@ const form = ref({
   commission_rate: 0,
   short_description: "",
 });
-
 const toggleCategory = (id) => {
-  if (expandedCategories.value.has(id)) {
-    expandedCategories.value.delete(id);
+  const index = expandedCategories.value.indexOf(id);
+  if (index > -1) {
+    expandedCategories.value.splice(index, 1);
   } else {
-    expandedCategories.value.add(id);
+    expandedCategories.value.push(id);
   }
 };
 
@@ -67,12 +68,14 @@ const flattenCategories = (categories, level = 0) => {
   return result;
 };
 
-const getCategories = async (page = 1) => {
-  const res = await sendRequest({
+const getCategories = async (query = "", page = 1) => {
+  const response = await sendRequest({
     method: "get",
-    url: `/v1/category?page=${page}`,
+    url: `/v1/category?search=${query}&page=${page}`,
   });
-  categories.value = res?.data?.data || [];
+  if (response) {
+    categories.value = response?.data?.data;
+  }
 };
 
 const onFileChange = (e) => {
@@ -175,33 +178,50 @@ const getCategoryStats = async () => {
   }
 };
 
-const handelDelete = async (id) => {
+const handelDelete = (id) => {
+  const cat = categories.value.find((c) => c.id === id);
+  deleteCategoryId.value = id;
+  deleteCategoryName.value = cat?.name || "this category"; // fallback
+  isDeleteModalOpened.value = true;
+};
+
+const confirmDelete = async () => {
   try {
     await sendRequest({
       method: "delete",
-      url: `/v1/category/${id}`,
+      url: `/v1/category/${deleteCategoryId.value}`,
     });
+
     toast.success("🗑️ Category Deleted Successfully", {
       autoClose: 1500,
       theme: "dark",
     });
+
     await getCategories();
   } catch (err) {
     console.error(err);
     toast.error("Failed to delete category");
+  } finally {
+    closeModal();
   }
 };
 
 const isModalOpened = ref(false);
 const isEditModalOpened = ref(false);
+const isDeleteModalOpened = ref(false);
+const deleteCategoryId = ref(null);
+const deleteCategoryName = ref("");
 
 const openModal = () => (isModalOpened.value = true);
 
 const closeModal = () => {
   isModalOpened.value = false;
   isEditModalOpened.value = false;
+  isDeleteModalOpened.value = false;
   resetForm();
   categoryImg.value = null;
+  deleteCategoryId.value = null;
+  deleteCategoryName.value = null;
 };
 
 // Reset form after closing
@@ -345,12 +365,7 @@ watch(search, (newValue) => {
               >
                 Category
               </th>
-              <th
-                scope="col"
-                class="px-6 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider"
-              >
-                Products
-              </th>
+              
               <th
                 scope="col"
                 class="px-6 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider"
@@ -403,6 +418,40 @@ watch(search, (newValue) => {
       </div>
     </div>
   </AppLayout>
+
+  <!-- Delete Confirmation Modal -->
+  <Modal2
+    title="Delete Category"
+    :isOpen="isDeleteModalOpened"
+    @modal-close="closeModal"
+    size="sm"
+  >
+    <div class="p-6 text-center">
+      <Icon
+        name="heroicons:exclamation-triangle"
+        class="mx-auto text-red-500 w-12 h-12 mb-3"
+      />
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">
+        Are you sure you want to delete this category?
+      </h3>
+      <p class="text-sm text-gray-500 mb-6">This action cannot be undone.</p>
+
+      <div class="flex justify-center gap-3">
+        <button
+          @click="closeModal"
+          class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          @click="confirmDelete"
+          class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+        >
+          Yes, Delete
+        </button>
+      </div>
+    </div>
+  </Modal2>
 
   <!-- Create Category Modal -->
   <Modal

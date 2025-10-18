@@ -1,6 +1,7 @@
 <script setup>
 import Modal from "@/components/Modal.vue";
 import { ref, onMounted, watch } from "vue";
+import Modal2 from "@/components/Modal2.vue";
 import useAxios from "@/composables/useAxios.js";
 import { toast } from "vue3-toastify";
 import { useRouter } from "vue-router";
@@ -9,95 +10,20 @@ const router = useRouter();
 const { loading, error, sendRequest } = useAxios();
 
 // Static brand data for demonstration
-const brands = ref([
-  {
-    id: 1,
-    name: "Apple",
-    slug: "apple",
-    logo: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=150",
-    description: "Innovative technology and electronics brand",
-    website: "https://apple.com",
-    product_count: 156,
-    status: "active",
-    featured: true,
-    established_year: 1976
-  },
-  {
-    id: 2,
-    name: "Samsung",
-    slug: "samsung",
-    logo: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=150",
-    description: "Global leader in electronics and appliances",
-    website: "https://samsung.com",
-    product_count: 234,
-    status: "active",
-    featured: true,
-    established_year: 1938
-  },
-  {
-    id: 3,
-    name: "Nike",
-    slug: "nike",
-    logo: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=150",
-    description: "World's leading athletic footwear and apparel",
-    website: "https://nike.com",
-    product_count: 189,
-    status: "active",
-    featured: true,
-    established_year: 1964
-  },
-  {
-    id: 4,
-    name: "Sony",
-    slug: "sony",
-    logo: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=150",
-    description: "Premium electronics and entertainment products",
-    website: "https://sony.com",
-    product_count: 98,
-    status: "active",
-    featured: false,
-    established_year: 1946
-  },
-  {
-    id: 5,
-    name: "Adidas",
-    slug: "adidas",
-    logo: "https://images.unsplash.com/photo-1543508282-6319a3e2621f?w=150",
-    description: "Sportswear manufacturer and lifestyle brand",
-    website: "https://adidas.com",
-    product_count: 145,
-    status: "active",
-    featured: true,
-    established_year: 1949
-  },
-  {
-    id: 6,
-    name: "Microsoft",
-    slug: "microsoft",
-    logo: "https://images.unsplash.com/photo-1634942537034-2531766767d1?w=150",
-    description: "Technology company and software developer",
-    website: "https://microsoft.com",
-    product_count: 76,
-    status: "active",
-    featured: false,
-    established_year: 1975
-  }
-]);
-
+const brands = ref([]);
+const isDeleteModalOpened = ref(false);
+const deleteBrandId = ref(null);
+const deleteBrandName = ref("");
 const search = ref("");
 
-const getBrands = async (query = "") => {
-  // In a real app, this would be an API call
-  if (query) {
-    const filtered = brands.value.filter(
-      (brand) =>
-        brand.name.toLowerCase().includes(query.toLowerCase()) ||
-        brand.slug.toLowerCase().includes(query.toLowerCase()) ||
-        brand.description.toLowerCase().includes(query.toLowerCase())
-    );
-    return filtered;
+const getBrands = async (query = "", page = 1) => {
+  const response = await sendRequest({
+    method: "get",
+    url: `/v1/brand?search=${query}&page=${page}`,
+  });
+  if (response) {
+    brands.value = response?.data?.data;
   }
-  return brands.value;
 };
 
 // Handle brand logo
@@ -114,34 +40,39 @@ const form = ref({
   website: null,
   logo: null,
   established_year: null,
-  status: "active",
-  featured: false
+  status: null,
+  featured: 0,
 });
 
 // Save Brand
 const onSubmit = async () => {
-  // In a real app, this would be an API call
-  const newBrand = {
-    id: Math.max(...brands.value.map((b) => b.id)) + 1,
-    ...form.value,
-    slug: form.value.name.toLowerCase().replace(/\s+/g, "-"),
-    product_count: 0,
-  };
+  try {
+    const response = await sendRequest({
+      method: "post",
+      url: "/v1/brand",
+      data: form.value,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-  brands.value.push(newBrand);
-
-  toast.success("Brand Created Successfully", {
-    autoclose: 1000,
-    theme: "dark",
-  });
-  closeModal();
+    if (response?.data) {
+      toast.success("✅ Brand Created Successfully", {
+        autoClose: 1500,
+        theme: "dark",
+      });
+      closeModal();
+      await getBrands();
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to create Brand");
+  }
 };
 
 const brand = ref(null);
 const editBrand = (brd) => {
   isEditModalOpened.value = true;
   brand.value = { ...brd };
-  brandLogo.value = brand.value.logo || null;
+  brandLogo.value = brand.value.logo_url || null;
   form.value.name = brand.value.name;
   form.value.description = brand.value.description;
   form.value.website = brand.value.website;
@@ -151,41 +82,60 @@ const editBrand = (brd) => {
 };
 
 const onUpdate = async (id) => {
-  // In a real app, this would be an API call
-  const updatedBrand = {
-    ...brand.value,
-    name: form.value.name,
-    description: form.value.description,
-    website: form.value.website,
-    established_year: form.value.established_year,
-    status: form.value.status,
-    featured: form.value.featured,
-    logo: form.value.logo || brandLogo.value,
-  };
+  try {
+    const formData = new FormData();
+    for (const key in form.value) {
+      formData.append(key, form.value[key] ?? "");
+    }
+    formData.append("_method", "PUT");
 
-  // Update the brand in the array
-  const index = brands.value.findIndex(b => b.id === id);
-  if (index !== -1) {
-    brands.value[index] = updatedBrand;
+    const response = await sendRequest({
+      method: "post",
+      url: `/v1/brand/${id}`,
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    if (response?.data) {
+      toast.success("✅ Brand Updated Successfully", {
+        autoClose: 1500,
+        theme: "dark",
+      });
+      await getBrands();
+      closeModal();
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to update Brand");
   }
-
-  toast.success("Brand Updated Successfully", {
-    autoClose: 500,
-    theme: "dark",
-  });
-  getBrands();
-  closeModal();
 };
 
-const handelDelete = async (id) => {
-  // In a real app, this would be an API call
-  brands.value = brands.value.filter(brand => brand.id !== id);
+const handelDelete = (id) => {
+  const cat = brands.value.find((c) => c.id === id);
+  deleteBrandId.value = id;
+  deleteBrandName.value = cat?.name || "this category"; // fallback
+  isDeleteModalOpened.value = true;
+};
 
-  toast.success("Brand Deleted Successfully", {
-    autoClose: 500,
-    theme: "dark",
-  });
-  await getBrands();
+const confirmDelete = async () => {
+  try {
+    await sendRequest({
+      method: "delete",
+      url: `/v1/brand/${deleteBrandId.value}`,
+    });
+
+    toast.success("🗑️ Brand Deleted Successfully", {
+      autoClose: 1500,
+      theme: "dark",
+    });
+
+    await getBrands();
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to delete Brand");
+  } finally {
+    closeModal();
+  }
 };
 
 const reset = () => {
@@ -194,8 +144,8 @@ const reset = () => {
   form.value.website = null;
   form.value.logo = null;
   form.value.established_year = null;
-  form.value.status = "active";
-  form.value.featured = false;
+  form.value.status = null;
+  form.value.featured = 0;
   brandLogo.value = null;
 };
 
@@ -210,23 +160,39 @@ const openModal = () => {
 const closeModal = () => {
   isModalOpened.value = false;
   isEditModalOpened.value = false;
+  isDeleteModalOpened.value = false;
   reset();
+  brandLogo.value = null;
+  deleteBrandId.value = null;
+  deleteBrandName.value = null;
 };
 
 // Stats calculations
 const totalBrands = ref(0);
 const activeBrands = ref(0);
-const featuredBrands = ref(0);
+const BrandsWithProducts = ref(0);
 
-const calculateStats = () => {
-  totalBrands.value = brands.value.length;
-  activeBrands.value = brands.value.filter(brand => brand.status === 'active').length;
-  featuredBrands.value = brands.value.filter(brand => brand.featured).length;
+// Fetch stats from API
+const getBrandStats = async () => {
+  try {
+    const res = await sendRequest({
+      method: "get",
+      url: "/v1/brand/stats",
+    });
+
+    if (res?.data) {
+      totalBrands.value = res.data.total;
+      activeBrands.value = res.data.active;
+      BrandsWithProducts.value = res.data.with_products;
+    }
+  } catch (err) {
+    console.error("Failed to load Brands stats", err);
+  }
 };
 
 onMounted(() => {
   getBrands();
-  calculateStats();
+  getBrandStats();
 });
 
 watch(search, (newValue) => {
@@ -289,10 +255,10 @@ watch(search, (newValue) => {
             <p
               class="text-sm font-semibold tracking-wide uppercase text-purple-600/80"
             >
-              Featured Brands
+              With Products
             </p>
             <p class="text-3xl font-bold text-purple-900">
-              {{ featuredBrands }}
+              {{ BrandsWithProducts }}
             </p>
           </div>
           <div
@@ -351,13 +317,7 @@ watch(search, (newValue) => {
               >
                 Brand
               </th>
-              
-              <th
-                scope="col"
-                class="px-6 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider"
-              >
-                Products
-              </th>
+
               <th
                 scope="col"
                 class="px-6 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider"
@@ -385,9 +345,9 @@ watch(search, (newValue) => {
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            <tr 
-              v-for="brand in brands" 
-              :key="brand.id" 
+            <tr
+              v-for="brand in brands"
+              :key="brand.id"
               class="hover:bg-gray-50 transition-colors"
             >
               <td class="px-6 py-4 whitespace-nowrap">
@@ -397,7 +357,7 @@ watch(search, (newValue) => {
                   >
                     <img
                       class="h-12 w-12 object-cover"
-                      :src="brand.logo"
+                      :src="brand.logo_url"
                       :alt="brand.name"
                     />
                   </div>
@@ -405,29 +365,30 @@ watch(search, (newValue) => {
                     <div class="text-sm font-medium text-gray-900">
                       {{ brand.name }}
                     </div>
-                    <div class="text-sm text-gray-500">
-                      /{{ brand.slug }}
-                    </div>
+                    <div class="text-sm text-gray-500">/{{ brand.slug }}</div>
                     <div v-if="brand.website" class="text-xs text-blue-500">
-                      <a :href="brand.website" target="_blank" class="hover:underline">
+                      <a
+                        :href="brand.website"
+                        target="_blank"
+                        class="hover:underline"
+                      >
                         {{ brand.website }}
                       </a>
                     </div>
                   </div>
                 </div>
               </td>
-              
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900 font-medium">
-                  {{ brand.product_count }}
-                </div>
-              </td>
+
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ brand.established_year }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  :class="brand.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                  :class="
+                    brand.status === 'active'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  "
                   class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                 >
                   {{ brand.status }}
@@ -435,10 +396,14 @@ watch(search, (newValue) => {
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
-                  :class="brand.featured ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'"
+                  :class="
+                    brand.featured
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-gray-100 text-gray-800'
+                  "
                   class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                 >
-                  {{ brand.featured ? 'Yes' : 'No' }}
+                  {{ brand.featured ? "Yes" : "No" }}
                 </span>
               </td>
               <td
@@ -480,10 +445,7 @@ watch(search, (newValue) => {
         class="w-full h-52 flex items-center justify-center"
       >
         <div class="text-center">
-          <Icon
-            name="heroicons:tag"
-            class="w-16 h-16 text-gray-300 mx-auto"
-          />
+          <Icon name="heroicons:tag" class="w-16 h-16 text-gray-300 mx-auto" />
           <p class="mt-4 text-gray-500">
             No brands found. Create your first brand!
           </p>
@@ -491,6 +453,40 @@ watch(search, (newValue) => {
       </div>
     </div>
   </AppLayout>
+
+  <!-- Delete Confirmation Modal -->
+  <Modal2
+    title="Delete Brand"
+    :isOpen="isDeleteModalOpened"
+    @modal-close="closeModal"
+    size="sm"
+  >
+    <div class="p-6 text-center">
+      <Icon
+        name="heroicons:exclamation-triangle"
+        class="mx-auto text-red-500 w-12 h-12 mb-3"
+      />
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">
+        Are you sure you want to delete this Brand?
+      </h3>
+      <p class="text-sm text-gray-500 mb-6">This action cannot be undone.</p>
+
+      <div class="flex justify-center gap-3">
+        <button
+          @click="closeModal"
+          class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          @click="confirmDelete"
+          class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+        >
+          Yes, Delete
+        </button>
+      </div>
+    </div>
+  </Modal2>
 
   <!-- Create Brand Modal -->
   <Modal
@@ -500,6 +496,7 @@ watch(search, (newValue) => {
     size="lg"
   >
     <div class="p-6">
+     
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="md:col-span-2">
           <label for="name" class="block text-sm font-medium text-gray-700 mb-1"
@@ -514,7 +511,9 @@ watch(search, (newValue) => {
         </div>
 
         <div class="md:col-span-2">
-          <label for="description" class="block text-sm font-medium text-gray-700 mb-1"
+          <label
+            for="description"
+            class="block text-sm font-medium text-gray-700 mb-1"
             >Description</label
           >
           <textarea
@@ -526,7 +525,9 @@ watch(search, (newValue) => {
         </div>
 
         <div>
-          <label for="website" class="block text-sm font-medium text-gray-700 mb-1"
+          <label
+            for="website"
+            class="block text-sm font-medium text-gray-700 mb-1"
             >Website URL</label
           >
           <input
@@ -538,7 +539,9 @@ watch(search, (newValue) => {
         </div>
 
         <div>
-          <label for="established_year" class="block text-sm font-medium text-gray-700 mb-1"
+          <label
+            for="established_year"
+            class="block text-sm font-medium text-gray-700 mb-1"
             >Established Year</label
           >
           <input
@@ -574,7 +577,10 @@ watch(search, (newValue) => {
               value="inactive"
               class="h-4 w-4 text-primary focus:ring-primary border-gray-300"
             />
-            <label for="status-inactive" class="ml-2 block text-sm text-gray-700">
+            <label
+              for="status-inactive"
+              class="ml-2 block text-sm text-gray-700"
+            >
               Inactive
             </label>
           </div>
@@ -587,16 +593,17 @@ watch(search, (newValue) => {
             name="featured"
             type="checkbox"
             class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+            :true-value="1"
+            :false-value="0"
           />
+
           <label for="featured" class="ml-2 block text-sm text-gray-700">
             Featured Brand
           </label>
         </div>
 
         <div class="md:col-span-2">
-          <label
-            for="logo"
-            class="block text-sm font-medium text-gray-700 mb-1"
+          <label for="logo" class="block text-sm font-medium text-gray-700 mb-1"
             >Brand Logo</label
           >
           <div
@@ -665,40 +672,46 @@ watch(search, (newValue) => {
             >Brand Name</label
           >
           <input
-            v-model="brand.name"
+            v-model="form.name"
             type="text"
             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
           />
         </div>
 
         <div class="md:col-span-2">
-          <label for="description" class="block text-sm font-medium text-gray-700 mb-1"
+          <label
+            for="description"
+            class="block text-sm font-medium text-gray-700 mb-1"
             >Description</label
           >
           <textarea
-            v-model="brand.description"
+            v-model="form.description"
             rows="3"
             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
           ></textarea>
         </div>
 
         <div>
-          <label for="website" class="block text-sm font-medium text-gray-700 mb-1"
+          <label
+            for="website"
+            class="block text-sm font-medium text-gray-700 mb-1"
             >Website URL</label
           >
           <input
-            v-model="brand.website"
+            v-model="form.website"
             type="url"
             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
           />
         </div>
 
         <div>
-          <label for="established_year" class="block text-sm font-medium text-gray-700 mb-1"
+          <label
+            for="established_year"
+            class="block text-sm font-medium text-gray-700 mb-1"
             >Established Year</label
           >
           <input
-            v-model="brand.established_year"
+            v-model="form.established_year"
             type="number"
             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
             min="1900"
@@ -709,27 +722,33 @@ watch(search, (newValue) => {
         <div class="flex items-center gap-4">
           <div class="flex items-center">
             <input
-              v-model="brand.status"
+              v-model="form.status"
               id="edit-status-active"
               name="edit-status"
               type="radio"
               value="active"
               class="h-4 w-4 text-primary focus:ring-primary border-gray-300"
             />
-            <label for="edit-status-active" class="ml-2 block text-sm text-gray-700">
+            <label
+              for="edit-status-active"
+              class="ml-2 block text-sm text-gray-700"
+            >
               Active
             </label>
           </div>
           <div class="flex items-center">
             <input
-              v-model="brand.status"
+              v-model="form.status"
               id="edit-status-inactive"
               name="edit-status"
               type="radio"
               value="inactive"
               class="h-4 w-4 text-primary focus:ring-primary border-gray-300"
             />
-            <label for="edit-status-inactive" class="ml-2 block text-sm text-gray-700">
+            <label
+              for="edit-status-inactive"
+              class="ml-2 block text-sm text-gray-700"
+            >
               Inactive
             </label>
           </div>
@@ -737,7 +756,7 @@ watch(search, (newValue) => {
 
         <div class="flex items-center">
           <input
-            v-model="brand.featured"
+            v-model="form.featured"
             id="edit-featured"
             name="edit-featured"
             type="checkbox"
@@ -749,9 +768,7 @@ watch(search, (newValue) => {
         </div>
 
         <div class="md:col-span-2">
-          <label
-            for="logo"
-            class="block text-sm font-medium text-gray-700 mb-1"
+          <label for="logo" class="block text-sm font-medium text-gray-700 mb-1"
             >Brand Logo</label
           >
           <div
