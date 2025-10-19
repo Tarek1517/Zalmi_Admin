@@ -181,7 +181,8 @@ const adminStore = useAdminStore();
                 <span class="text-white font-semibold text-sm">SA</span>
               </div>
               <div class="hidden md:block text-left">
-                <p class="text-sm font-medium">System Admin</p>
+                <p v-if="adminStore?.admin?.user" class="text-sm font-medium">{{ adminStore?.admin?.user?.name }}</p>
+                <p v-else class="text-sm font-medium">{{ adminStore?.admin?.name }}</p>
                 <p class="text-xs text-primary">Super Administrator</p>
               </div>
               <svg

@@ -15,25 +15,24 @@ export const useAdminStore = defineStore("admin", () => {
     if (storedAdmin) {
       try {
         loading.value = true;
-        const { data } = await axios.get("/admin/user", {
-          headers: {
-            Authorization: `Bearer ${storedAdmin?.token}`,
-          },
+        const { data } = await sendRequest({
+          url: "/admin/user",
+          method: "GET",
         });
 
         if (data) {
           admin.value = data;
         } else {
-          await clearLocalStorage();
+          await clearSession();
         }
       } catch (err) {
-        await clearLocalStorage();
+        await clearSession();
         error.value = err.response?.data || "An error occurred";
       } finally {
         loading.value = false;
       }
     } else {
-      await clearLocalStorage();
+      await clearSession();
     }
   }
 
@@ -61,11 +60,15 @@ export const useAdminStore = defineStore("admin", () => {
   async function signup(signupData) {
     try {
       loading.value = true;
-      const signupResponse = await axios.post("/api/admin/create", signupData);
+      const signupResponse = await sendRequest({
+        method: "POST",
+        url: "/admin/create",
+        data: signupData,
+      });
 
-      if (signupResponse.data?.data) {
-        await setLocalStorage(signupResponse.data.data);
-        admin.value = signupResponse.data.data;
+      if (signupResponse?.data) {
+        await setLocalStorage(signupResponse.data);
+        admin.value = signupResponse.data;
         return signupResponse;
       }
     } catch (err) {
@@ -87,13 +90,19 @@ export const useAdminStore = defineStore("admin", () => {
     } catch (err) {
       console.warn("Logout request failed — proceeding to clear session.");
     } finally {
-      admin.value = null;
-      await clearLocalStorage();
+      await clearSession();
       router.push({ name: "Home" });
     }
   }
-  async function setLocalStorage(admin) {
-    localStorage.setItem("admin", JSON.stringify(admin));
+
+  // Add clearSession function
+  async function clearSession() {
+    admin.value = null;
+    await clearLocalStorage();
+  }
+
+  async function setLocalStorage(adminData) {
+    localStorage.setItem("admin", JSON.stringify(adminData));
   }
 
   async function clearLocalStorage() {
@@ -107,6 +116,7 @@ export const useAdminStore = defineStore("admin", () => {
   function getToken() {
     return JSON.parse(localStorage.getItem("admin"))?.token;
   }
+
   return {
     admin,
     login,
@@ -114,6 +124,7 @@ export const useAdminStore = defineStore("admin", () => {
     isLoggedIn,
     fetchAdmin,
     logout,
+    clearSession, // Export clearSession
     loading,
     error,
     getToken,

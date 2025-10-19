@@ -1,210 +1,17 @@
-<script setup>
-import Modal from "@/components/Modal.vue";
-import Modal2 from "@/components/Modal2.vue";
-import { ref, onMounted, computed } from "vue";
-
-// Vendor approval data
-const vendors = ref([]);
-const selectedVendor = ref(null);
-const isApprovalModalOpen = ref(false);
-const isRejectionModalOpen = ref(false);
-const rejectionReason = ref("");
-const searchQuery = ref("");
-const statusFilter = ref("all");
-const isLoading = ref(true);
-
-// Status options
-const statusOptions = [
-  { value: "all", label: "All Status" },
-  { value: "pending", label: "Pending" },
-  { value: "approved", label: "Approved" },
-  { value: "rejected", label: "Rejected" },
-];
-
-// Mock data - in a real app, this would come from an API
-const mockVendors = [
-  {
-    id: 1,
-    name: "TechGadgets Inc.",
-    email: "contact@techgadgets.com",
-    phone: "+1 (555) 123-4567",
-    businessType: "Electronics Supplier",
-    registrationDate: "2023-10-15",
-    status: "pending",
-    documents: ["business_license.pdf", "tax_certificate.pdf"],
-    address: "123 Tech Street, San Francisco, CA 94103",
-  },
-  {
-    id: 2,
-    name: "FashionTrends LLC",
-    email: "info@fashiontrends.com",
-    phone: "+1 (555) 987-6543",
-    businessType: "Clothing Manufacturer",
-    registrationDate: "2023-10-10",
-    status: "approved",
-    documents: ["business_license.pdf", "quality_certificate.pdf"],
-    address: "456 Fashion Ave, New York, NY 10001",
-  },
-  {
-    id: 3,
-    name: "HomeEssentials Corp",
-    email: "support@homeessentials.com",
-    phone: "+1 (555) 456-7890",
-    businessType: "Home Goods Supplier",
-    registrationDate: "2023-10-05",
-    status: "rejected",
-    documents: ["business_license.pdf"],
-    address: "789 Home Lane, Chicago, IL 60601",
-    rejectionReason: "Incomplete documentation provided",
-  },
-  {
-    id: 4,
-    name: "SportGear Suppliers",
-    email: "sales@sportgear.com",
-    phone: "+1 (555) 234-5678",
-    businessType: "Sports Equipment",
-    registrationDate: "2023-10-18",
-    status: "pending",
-    documents: ["business_license.pdf", "safety_certificate.pdf"],
-    address: "321 Athletic Blvd, Denver, CO 80202",
-  },
-  {
-    id: 5,
-    name: "OrganicFoods Direct",
-    email: "orders@organicfoods.com",
-    phone: "+1 (555) 876-5432",
-    businessType: "Food Supplier",
-    registrationDate: "2023-10-12",
-    status: "pending",
-    documents: [
-      "business_license.pdf",
-      "organic_certificate.pdf",
-      "health_permit.pdf",
-    ],
-    address: "654 Green Street, Portland, OR 97205",
-  },
-];
-
-// Fetch vendors (simulated API call)
-const fetchVendors = () => {
-  isLoading.value = true;
-  setTimeout(() => {
-    vendors.value = mockVendors;
-    isLoading.value = false;
-  }, 800);
-};
-
-// Filtered vendors based on search and status filter
-const filteredVendors = computed(() => {
-  return vendors.value.filter((vendor) => {
-    const matchesSearch =
-      vendor.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      vendor.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      vendor.businessType
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase());
-
-    const matchesStatus =
-      statusFilter.value === "all" || vendor.status === statusFilter.value;
-
-    return matchesSearch && matchesStatus;
-  });
-});
-
-// Open approval modal
-const openApprovalModal = (vendor) => {
-  selectedVendor.value = vendor;
-  isApprovalModalOpen.value = true;
-};
-
-// Open rejection modal
-const openRejectionModal = (vendor) => {
-  selectedVendor.value = vendor;
-  rejectionReason.value = "";
-  isRejectionModalOpen.value = true;
-};
-
-// Approve vendor
-const approveVendor = () => {
-  if (selectedVendor.value) {
-    const index = vendors.value.findIndex(
-      (v) => v.id === selectedVendor.value.id
-    );
-    if (index !== -1) {
-      vendors.value[index].status = "approved";
-      // In a real app, you would make an API call here
-    }
-    isApprovalModalOpen.value = false;
-  }
-};
-
-// Reject vendor
-const rejectVendor = () => {
-  if (selectedVendor.value && rejectionReason.value.trim()) {
-    const index = vendors.value.findIndex(
-      (v) => v.id === selectedVendor.value.id
-    );
-    if (index !== -1) {
-      vendors.value[index].status = "rejected";
-      vendors.value[index].rejectionReason = rejectionReason.value;
-      // In a real app, you would make an API call here
-    }
-    isRejectionModalOpen.value = false;
-  }
-};
-
-// Get status badge class
-const getStatusClass = (status) => {
-  const classes = {
-    pending: "bg-yellow-100 text-yellow-800",
-    approved: "bg-green-100 text-green-800",
-    rejected: "bg-red-100 text-red-800",
-  };
-  return classes[status] || "bg-gray-100 text-gray-800";
-};
-
-// Get status text
-const getStatusText = (status) => {
-  const texts = {
-    pending: "Pending Review",
-    approved: "Approved",
-    rejected: "Rejected",
-  };
-  return texts[status] || status;
-};
-
-// Format date
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-};
-
-// Initialize component
-onMounted(() => {
-  fetchVendors();
-});
-</script>
-
 <template>
   <div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-      <!-- Total Warehouses -->
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <!-- Pending Review -->
       <div
-        class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-blue-500/10 to-blue-600/20"
+        class="rounded-xl shadow-lg p-6 border-0 bg-gradient-to-br from-blue-500/10 to-blue-600/20"
       >
         <div class="flex items-center justify-between">
           <div>
-            <p
-              class="text-sm font-semibold tracking-wide uppercase text-blue-600/80"
-            >
+            <p class="text-sm font-semibold uppercase text-blue-600/80">
               Pending Review
             </p>
-            <p class="text-3xl font-bold text-blue-900">
-              {{ vendors.filter((v) => v.status === "pending").length }}
-            </p>
+            <p class="text-3xl font-bold text-blue-900">{{ pendingCount }}</p>
           </div>
           <div class="p-3 rounded-xl shadow-md bg-blue-500/20 text-blue-600">
             <Icon name="heroicons:clock" class="text-2xl" />
@@ -212,43 +19,16 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Total Capacity -->
+      <!-- Rejected Vendors -->
       <div
-        class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-emerald-500/10 to-emerald-600/20"
+        class="rounded-xl shadow-lg p-6 border-0 bg-gradient-to-br from-red-500/10 to-red-600/20"
       >
         <div class="flex items-center justify-between">
           <div>
-            <p
-              class="text-sm font-semibold tracking-wide uppercase text-emerald-600/80"
-            >
-              Approved Vendors
-            </p>
-            <p class="text-3xl font-bold text-emerald-900">
-              {{ vendors.filter((v) => v.status === "approved").length }}
-            </p>
-          </div>
-          <div
-            class="p-3 rounded-xl shadow-md bg-emerald-500/20 text-emerald-600"
-          >
-            <Icon name="heroicons:check-badge" class="text-2xl" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Outgoing Shipments -->
-      <div
-        class="rounded-xl shadow-lg p-6 border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-red-500/10 to-red-600/20"
-      >
-        <div class="flex items-center justify-between">
-          <div>
-            <p
-              class="text-sm font-semibold tracking-wide uppercase text-red-600/80"
-            >
+            <p class="text-sm font-semibold uppercase text-red-600/80">
               Rejected Vendors
             </p>
-            <p class="text-3xl font-bold text-red-900">
-              {{ vendors.filter((v) => v.status === "rejected").length }}
-            </p>
+            <p class="text-3xl font-bold text-red-900">{{ rejectedCount }}</p>
           </div>
           <div class="p-3 rounded-xl shadow-md bg-red-500/20 text-red-600">
             <Icon name="heroicons:x-circle" class="text-2xl" />
@@ -256,6 +36,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
     <!-- Header -->
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"
@@ -263,7 +44,7 @@ onMounted(() => {
       <div>
         <h2 class="text-2xl font-bold text-gray-900">Vendor Approvals</h2>
         <p class="text-sm text-gray-600 mt-1">
-          Manage and review vendor applications
+          Manage pending and rejected vendor applications
         </p>
       </div>
 
@@ -291,14 +72,19 @@ onMounted(() => {
           v-model="statusFilter"
           class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
         >
-          <option
-            v-for="option in statusOptions"
-            :value="option.value"
-            :key="option.value"
-          >
-            {{ option.label }}
-          </option>
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="rejected">Rejected</option>
         </select>
+
+        <!-- Refresh Button -->
+        <button
+          @click="getVendors"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition flex items-center gap-2"
+        >
+          <Icon name="heroicons:arrow-path" class="h-4 w-4" />
+          Refresh
+        </button>
       </div>
     </div>
 
@@ -311,26 +97,23 @@ onMounted(() => {
       </div>
 
       <!-- Loading State -->
-      <div v-if="isLoading" class="p-8 text-center">
-        <div class="inline-flex items-center justify-center">
-          <div
-            class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
-          ></div>
-          <span class="ml-3 text-gray-600">Loading vendors...</span>
+      <div v-if="loading" class="p-8 text-center">
+        <div class="flex items-center justify-center gap-2">
+          <Icon name="heroicons:arrow-path" class="h-5 w-5 animate-spin" />
+          <span class="text-gray-600">Loading vendors...</span>
         </div>
       </div>
 
       <!-- Empty State -->
       <div v-else-if="filteredVendors.length === 0" class="p-8 text-center">
-        <div
-          class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4"
-        >
-          <Icon name="heroicons:user-group" class="h-8 w-8 text-gray-400" />
+        <div class="text-gray-500">
+          <Icon
+            name="heroicons:document-magnifying-glass"
+            class="h-12 w-12 mx-auto mb-4 opacity-50"
+          />
+          <p class="text-lg font-medium mb-2">No vendors found</p>
+          <p class="text-sm">Try adjusting your search or filter criteria</p>
         </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-1">No vendors found</h3>
-        <p class="text-gray-500">
-          Try adjusting your search or filter criteria
-        </p>
       </div>
 
       <!-- Vendors List -->
@@ -346,7 +129,12 @@ onMounted(() => {
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Business Type
+                Contact Info
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Documents
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -379,17 +167,38 @@ onMounted(() => {
                   </div>
                   <div class="ml-4">
                     <div class="text-sm font-medium text-gray-900">
-                      {{ vendor.name }}
+                      {{ vendor.vendorName || "N/A" }}
                     </div>
-                    <div class="text-sm text-gray-500">{{ vendor.email }}</div>
+                    <div class="text-sm text-gray-500">
+                      License: {{ vendor.licenseNumber || "N/A" }}
+                    </div>
                   </div>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ vendor.businessType }}
+                <div>{{ vendor.email || "N/A" }}</div>
+                <div class="text-gray-500">
+                  {{ vendor.phoneNumber || "N/A" }}
+                </div>
+                <div class="text-xs text-gray-400">
+                  NID: {{ vendor.nid || "N/A" }}
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <button
+                  @click="downloadDocument(vendor)"
+                  class="text-blue-600 hover:text-blue-800 p-1.5 rounded-md hover:bg-blue-50 transition-colors flex items-center gap-1"
+                  :disabled="!vendor.documents"
+                  :class="{
+                    'opacity-50 cursor-not-allowed': !vendor.documents,
+                  }"
+                >
+                  <Icon name="heroicons:document-arrow-down" class="h-4 w-4" />
+                  <span class="text-xs">Download</span>
+                </button>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ formatDate(vendor.registrationDate) }}
+                {{ formatDate(vendor.created_at) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
@@ -402,68 +211,27 @@ onMounted(() => {
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <div class="flex items-center gap-2">
                   <button
+                    v-if="vendor.status === 'pending'"
                     @click="openApprovalModal(vendor)"
                     class="text-green-600 hover:text-green-800 p-1.5 rounded-md hover:bg-green-50 transition-colors"
-                    :disabled="vendor.status !== 'pending'"
-                    :class="{
-                      'opacity-50 cursor-not-allowed':
-                        vendor.status !== 'pending',
-                    }"
+                    title="Approve Vendor"
                   >
                     <Icon name="heroicons:check" class="h-4 w-4" />
                   </button>
                   <button
+                    v-if="vendor.status === 'pending'"
                     @click="openRejectionModal(vendor)"
                     class="text-red-600 hover:text-red-800 p-1.5 rounded-md hover:bg-red-50 transition-colors"
-                    :disabled="vendor.status !== 'pending'"
-                    :class="{
-                      'opacity-50 cursor-not-allowed':
-                        vendor.status !== 'pending',
-                    }"
+                    title="Reject Vendor"
                   >
                     <Icon name="heroicons:x-mark" class="h-4 w-4" />
                   </button>
-                  <button
-                    class="text-blue-600 hover:text-blue-800 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
-                  >
-                    <Icon name="heroicons:eye" class="h-4 w-4" />
-                  </button>
+                  
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
-      </div>
-
-      <!-- Pagination -->
-      <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
-        <div class="flex items-center justify-between">
-          <div class="text-sm text-gray-700">
-            Showing <span class="font-medium">1</span> to
-            <span class="font-medium">{{ filteredVendors.length }}</span> of
-            <span class="font-medium">{{ filteredVendors.length }}</span>
-            results
-          </div>
-          <div class="flex items-center gap-2">
-            <button
-              class="px-3 py-1.5 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
-            >
-              Previous
-            </button>
-            <button
-              class="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm"
-            >
-              1
-            </button>
-            <button
-              class="px-3 py-1.5 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
-            >
-              Next
-            </button>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -476,24 +244,20 @@ onMounted(() => {
       <div class="py-4">
         <p class="text-gray-600 mb-4">
           Are you sure you want to approve
-          <span class="font-semibold">{{ selectedVendor?.name }}</span> as a
-          vendor?
+          <span class="font-semibold">{{ selectedVendor?.vendorName }}</span> as
+          a vendor?
         </p>
         <div class="bg-blue-50 p-4 rounded-lg mb-4">
           <p class="text-sm text-blue-700">
-            This action will grant them full access to the vendor portal and
-            allow them to submit products.
+            This action will grant them full access to the vendor portal.
           </p>
         </div>
         <div class="flex justify-end gap-3 pt-2">
           <button
             @click="isApprovalModalOpen = false"
-            class="p-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white shadow-md hover:from-rose-600 hover:to-rose-700 hover:shadow-lg transform hover:scale-105 transition-all duration-300 group"
+            class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition"
           >
-            <Icon
-              name="material-symbols:close-rounded"
-              class="text-white text-2xl group-hover:rotate-90 transition-transform duration-300"
-            />
+            Cancel
           </button>
           <button
             @click="approveVendor"
@@ -514,7 +278,7 @@ onMounted(() => {
       <div class="py-4">
         <p class="text-gray-600 mb-4">
           Are you sure you want to reject
-          <span class="font-semibold">{{ selectedVendor?.name }}</span
+          <span class="font-semibold">{{ selectedVendor?.vendorName }}</span
           >'s vendor application?
         </p>
 
@@ -534,22 +298,12 @@ onMounted(() => {
           ></textarea>
         </div>
 
-        <div class="bg-red-50 p-4 rounded-lg mb-4">
-          <p class="text-sm text-red-700">
-            This action cannot be undone. The vendor will be notified of the
-            rejection.
-          </p>
-        </div>
-
         <div class="flex justify-end gap-3 pt-2">
           <button
             @click="isRejectionModalOpen = false"
-            class="p-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white shadow-md hover:from-rose-600 hover:to-rose-700 hover:shadow-lg transform hover:scale-105 transition-all duration-300 group"
+            class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition"
           >
-            <Icon
-              name="material-symbols:close-rounded"
-              class="text-white text-2xl group-hover:rotate-90 transition-transform duration-300"
-            />
+            Cancel
           </button>
           <button
             @click="rejectVendor"
@@ -566,3 +320,166 @@ onMounted(() => {
     </Modal2>
   </div>
 </template>
+
+<script setup>
+import Modal from "@/components/Modal.vue";
+import Modal2 from "@/components/Modal2.vue";
+import { ref, onMounted, computed } from "vue";
+import useAxios from "@/composables/useAxios.js";
+import { toast } from "vue3-toastify";
+
+const { loading, sendRequest } = useAxios();
+
+// Data
+const vendorAproval = ref([]);
+const selectedVendor = ref(null);
+const isApprovalModalOpen = ref(false);
+const isRejectionModalOpen = ref(false);
+const rejectionReason = ref("");
+const searchQuery = ref("");
+const statusFilter = ref("all");
+
+// Get vendors array safely
+const vendorsArray = computed(() => {
+  if (Array.isArray(vendorAproval.value)) return vendorAproval.value;
+  if (vendorAproval.value?.data) return vendorAproval.value.data;
+  return [];
+});
+
+// Filter only pending and rejected vendors
+const filteredVendors = computed(() => {
+  let vendors = vendorsArray.value.filter(
+    (vendor) => vendor.status === "pending" || vendor.status === "rejected"
+  );
+
+  if (searchQuery.value) {
+    vendors = vendors.filter(
+      (vendor) =>
+        vendor.vendorName
+          ?.toLowerCase()
+          .includes(searchQuery.value.toLowerCase()) ||
+        vendor.email?.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+  }
+
+  if (statusFilter.value !== "all") {
+    vendors = vendors.filter((vendor) => vendor.status === statusFilter.value);
+  }
+
+  return vendors;
+});
+
+// Stats
+const pendingCount = computed(
+  () => vendorsArray.value.filter((v) => v.status === "pending").length
+);
+const rejectedCount = computed(
+  () => vendorsArray.value.filter((v) => v.status === "rejected").length
+);
+
+// Methods
+const getVendors = async () => {
+  try {
+    const response = await sendRequest({
+      method: "get",
+      url: "/v1/vendorApproval",
+    });
+    vendorAproval.value = response?.data || [];
+  } catch (err) {
+    toast.error("Failed to fetch vendors.");
+  }
+};
+
+const openApprovalModal = (vendor) => {
+  selectedVendor.value = vendor;
+  isApprovalModalOpen.value = true;
+};
+
+const openRejectionModal = (vendor) => {
+  selectedVendor.value = vendor;
+  rejectionReason.value = "";
+  isRejectionModalOpen.value = true;
+};
+
+const approveVendor = async () => {
+  if (!selectedVendor.value) return;
+
+  try {
+    await sendRequest({
+      method: "POST",
+      url: `/v1/vendorApproval/${selectedVendor.value.id}/approve`,
+    });
+
+    // Update local state
+    const vendor = vendorsArray.value.find(
+      (v) => v.id === selectedVendor.value.id
+    );
+    if (vendor) vendor.status = "approved";
+
+    toast.success("Vendor approved successfully!");
+    isApprovalModalOpen.value = false;
+  } catch (err) {
+    toast.error("Failed to approve vendor.");
+  }
+};
+
+const rejectVendor = async () => {
+  if (!selectedVendor.value || !rejectionReason.value.trim()) return;
+
+  try {
+    await sendRequest({
+      method: "POST",
+      url: `/v1/vendorApproval/${selectedVendor.value.id}/reject`,
+      data: { reason: rejectionReason.value },
+    });
+
+    // Update local state
+    const vendor = vendorsArray.value.find(
+      (v) => v.id === selectedVendor.value.id
+    );
+    if (vendor) vendor.status = "rejected";
+
+    toast.success("Vendor rejected successfully!");
+    isRejectionModalOpen.value = false;
+  } catch (err) {
+    toast.error("Failed to reject vendor.");
+  }
+};
+
+const getStatusClass = (status) => {
+  return (
+    {
+      pending: "bg-yellow-100 text-yellow-800",
+      rejected: "bg-red-100 text-red-800",
+    }[status] || "bg-gray-100 text-gray-800"
+  );
+};
+
+const getStatusText = (status) => {
+  return (
+    {
+      pending: "Pending Review",
+      rejected: "Rejected",
+    }[status] || status
+  );
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return new Date(dateString).toLocaleDateString("en-US");
+};
+
+const downloadDocument = (vendor) => {
+  if (vendor.documents) {
+    const documentUrl = `${import.meta.env.VITE_API_URL}/${vendor.documents}`;
+    window.open(documentUrl, "_blank");
+  } else {
+    toast.error("No document available.");
+  }
+};
+
+// Initialize
+onMounted(() => {
+  getVendors();
+});
+</script>
