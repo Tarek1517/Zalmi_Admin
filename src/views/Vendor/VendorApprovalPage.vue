@@ -211,9 +211,8 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <div class="flex items-center gap-2">
                   <button
-                    v-if="vendor.status === 'pending'"
                     @click="openApprovalModal(vendor)"
-                    class="text-green-600 hover:text-green-800 p-1.5 rounded-md hover:bg-green-50 transition-colors"
+                    class="text-green-600 hover:text-green-800 p-1.5 cursor-pointer rounded-md hover:bg-green-50 transition-colors"
                     title="Approve Vendor"
                   >
                     <Icon name="heroicons:check" class="h-4 w-4" />
@@ -221,12 +220,11 @@
                   <button
                     v-if="vendor.status === 'pending'"
                     @click="openRejectionModal(vendor)"
-                    class="text-red-600 hover:text-red-800 p-1.5 rounded-md hover:bg-red-50 transition-colors"
+                    class="text-red-600 hover:text-red-800 p-1.5 cursor-pointer rounded-md hover:bg-red-50 transition-colors"
                     title="Reject Vendor"
                   >
                     <Icon name="heroicons:x-mark" class="h-4 w-4" />
                   </button>
-                  
                 </div>
               </td>
             </tr>
@@ -255,13 +253,13 @@
         <div class="flex justify-end gap-3 pt-2">
           <button
             @click="isApprovalModalOpen = false"
-            class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition"
+            class="px-4 py-2 border border-gray-300 cursor-pointer rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition"
           >
             Cancel
           </button>
           <button
             @click="approveVendor"
-            class="px-5 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+            class="px-5 py-2 rounded-lg bg-green-600 cursor-pointer text-white hover:bg-green-700 transition"
           >
             Approve Vendor
           </button>
@@ -301,17 +299,19 @@
         <div class="flex justify-end gap-3 pt-2">
           <button
             @click="isRejectionModalOpen = false"
-            class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition"
+            class="px-4 py-2 border border-gray-300 cursor-pointer rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition"
           >
             Cancel
           </button>
           <button
             @click="rejectVendor"
             :disabled="!rejectionReason.trim()"
-            :class="{
-              'opacity-50 cursor-not-allowed': !rejectionReason.trim(),
-            }"
-            class="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+            :class="[
+              'px-5 py-2 rounded-lg text-white transition',
+              rejectionReason.trim()
+                ? 'bg-red-600 hover:bg-red-700 cursor-pointer'
+                : 'bg-red-600 opacity-50 cursor-not-allowed',
+            ]"
           >
             Reject Application
           </button>
