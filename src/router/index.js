@@ -69,6 +69,12 @@ const router = createRouter({
         },
 
         {
+          path: "Products",
+          name: "products",
+          component: () => import("@/views/Products/index.vue"),
+        },
+
+        {
           path: "campaign",
           name: "Campaign",
           component: () => import("@/views/Campaign/index.vue"),
@@ -120,7 +126,17 @@ const router = createRouter({
           name: "Security",
           component: () => import("@/views/Security/index.vue"),
         },
-        
+
+        {
+          path: "city",
+          name: "city",
+          component: () => import("@/views/Shipping/City.vue"),
+        },
+        {
+          path: "area",
+          name: "area",
+          component: () => import("@/views/Shipping/Area.vue"),
+        },
       ],
     },
     { path: "/", name: "Home", component: () => import("@/views/index.vue") },

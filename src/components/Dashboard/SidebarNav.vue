@@ -19,10 +19,12 @@ const isVendorLinks = ref(false);
 const isAffiliateLinks = ref(false);
 const isSystemLinks = ref(false);
 const isCMSLinks = ref(false);
+const isShippingCMSLinks = ref(false);
 const isCampaignLinks = ref(false);
 
 // Keep Admin menu open if the route matches its children
 const VendorRoutes = ["/dashboard/vendor-approval", "/dashboard/vendor-list"];
+const ShippingRoutes = ["/dashboard/city", "/dashboard/area"];
 const AffiliateRoutes = [
   "/dashboard/affiliate-approval",
   "/dashboard/affiliate-list",
@@ -51,6 +53,7 @@ watch(
     isSystemLinks.value = systemRoutes.includes(newPath);
     isCMSLinks.value = CMSRoutes.includes(newPath);
     isCampaignLinks.value = CampaignRoutes.includes(newPath);
+    isShippingCMSLinks.value = ShippingRoutes.includes(newPath);
   },
   { immediate: true }
 );
@@ -89,7 +92,7 @@ const toggleSidebar = () => {
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
             $route.path === '/dashboard'
-              ? 'bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 text-blue-700 font-semibold shadow-sm'
+              ? 'bg-gradient-to-r from-blue-50 to-blue-200 border-l-4 border-blue-500 text-blue-700 font-semibold shadow-sm'
               : 'text-gray-900 hover:bg-gray-50 hover:text-blue-700 font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
@@ -117,7 +120,7 @@ const toggleSidebar = () => {
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
             $route.path.startsWith('/dashboard/categories')
-              ? 'bg-gradient-to-r from-cyan-50 to-cyan-100 border-l-4 border-cyan-500 text-cyan-700 font-semibold shadow-sm'
+              ? 'bg-gradient-to-r from-cyan-50 to-cyan-200 border-l-4 border-cyan-500 text-cyan-700 font-semibold shadow-sm'
               : 'text-gray-900 hover:text-cyan-600 font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
@@ -147,7 +150,7 @@ const toggleSidebar = () => {
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
             $route.path.startsWith('/dashboard/brand')
-              ? 'bg-gradient-to-r from-secondary/5 to-secondary/35 border-l-4 border-secondary text-secondary font-semibold shadow-sm'
+              ? 'bg-gradient-to-r from-secondary/5 to-secondary/25 border-l-4 border-secondary text-secondary font-semibold shadow-sm'
               : 'text-gray-900 hover:text-secondary font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
@@ -164,6 +167,34 @@ const toggleSidebar = () => {
           <div
             class="w-2 h-2 rounded-full bg-secondary flex-shrink-0 ml-14"
             v-if="$route.path.startsWith('/dashboard/brand') && !isCollapsed"
+          ></div>
+        </router-link>
+      </li>
+
+      <!-- categories -->
+      <li>
+        <router-link
+          to="/dashboard/Products"
+          class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
+          :class="[
+            $route.path.startsWith('/dashboard/Products')
+              ? 'bg-gradient-to-r from-violet-50 to-violet-200 border-l-4 border-violet-500 text-violet-700 font-semibold shadow-sm'
+              : 'text-gray-900 hover:bg-gray-50 hover:text-violet-700 font-medium hover:translate-x-1',
+            isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
+          ]"
+        >
+          <Icon
+            name="eos-icons:product-classes"
+            class="text-xl text-violet-500 group-hover:scale-110 transition-transform flex-shrink-0"
+          />
+          <span
+            class="transition-all duration-200 overflow-hidden whitespace-nowrap"
+            :class="isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100 ml-3'"
+            >Products</span
+          >
+          <div
+            class="w-2 h-2 rounded-full bg-violet-500 flex-shrink-0 ml-14"
+            v-if="$route.path.startsWith('/dashboard/Products') && !isCollapsed"
           ></div>
         </router-link>
       </li>
@@ -592,6 +623,84 @@ const toggleSidebar = () => {
         </div>
       </li>
 
+      <!-- Shipping-->
+      <li>
+        <div
+          class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 cursor-pointer group hover:bg-gray-50"
+          :class="[
+            { 'bg-gray-50': isShippingCMSLinks },
+            isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
+          ]"
+          @click="
+            isCollapsed ? null : (isShippingCMSLinks = !isShippingCMSLinks)
+          "
+        >
+          <Icon
+            name="hugeicons:shipping-truck-02"
+            class="text-xl text-orange-500 group-hover:scale-110 transition-transform flex-shrink-0"
+          />
+          <span
+            class="font-medium transition-all duration-200 overflow-hidden whitespace-nowrap"
+            :class="{
+              'text-gray-900 group-hover:text-orange-900': !isShippingCMSLinks,
+              'text-orange-900': isShippingCMSLinks,
+              'w-0 opacity-0': isCollapsed,
+              'w-auto opacity-100 ml-3': !isCollapsed,
+            }"
+          >
+            Shipping
+          </span>
+          <Icon
+            v-if="!isCollapsed"
+            name="ph:caret-right"
+            class="text-lg text-gray-400 transition-transform duration-200 flex-shrink-0"
+            :class="{ 'rotate-90': isShippingCMSLinks }"
+          />
+        </div>
+        <div
+          v-if="!isCollapsed"
+          class="overflow-hidden transition-all duration-300 ease-in-out"
+          :class="{
+            'max-h-0': !isShippingCMSLinks,
+            'max-h-96': isShippingCMSLinks,
+          }"
+        >
+          <ul class="pl-5 space-y-1 mt-1">
+            <li>
+              <router-link
+                to="/dashboard/city"
+                class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm transition-all duration-200 hover:bg-green-50 hover:text-green-700"
+                :class="{
+                  'bg-green-50 text-green-700':
+                    $route.path === '/dashboard/city',
+                }"
+              >
+                <Icon
+                  name="solar:slider-vertical-outline"
+                  class="text-lg text-green-700 flex-shrink-0"
+                />
+                City
+              </router-link>
+            </li>
+            <li>
+              <router-link
+                to="/dashboard/area"
+                class="flex items-center gap-2 px-4 py-3 rounded-lg text-sm transition-all duration-200 hover:bg-blue-50 hover:text-blue-700"
+                :class="{
+                  'bg-blue-50 text-blue-700': $route.path === '/dashboard/area',
+                }"
+              >
+                <Icon
+                  name="material-symbols:patient-list"
+                  class="text-lg text-blue-700 flex-shrink-0"
+                />
+                Area
+              </router-link>
+            </li>
+          </ul>
+        </div>
+      </li>
+
       <!-- Orders -->
       <li>
         <router-link
@@ -599,7 +708,7 @@ const toggleSidebar = () => {
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
             $route.path.startsWith('/dashboard/orders')
-              ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-l-4 border-orange-500 text-orange-700 font-semibold shadow-sm'
+              ? 'bg-gradient-to-r from-orange-50 to-orange-200 border-l-4 border-orange-500 text-orange-700 font-semibold shadow-sm'
               : 'text-gray-900 hover:text-orange-600 font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
@@ -627,7 +736,7 @@ const toggleSidebar = () => {
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
             $route.path.startsWith('/dashboard/warehouse-overview')
-              ? 'bg-gradient-to-r from-indigo-50 to-indigo-100 border-l-4 border-indigo-500 text-indigo-700 font-semibold shadow-sm'
+              ? 'bg-gradient-to-r from-indigo-50 to-indigo-200 border-l-4 border-indigo-500 text-indigo-700 font-semibold shadow-sm'
               : 'text-gray-900 hover:text-indigo-700 font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
@@ -658,7 +767,7 @@ const toggleSidebar = () => {
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
             $route.path.startsWith('/dashboard/send-mail')
-              ? 'bg-gradient-to-r from-amber-50 to-amber-100 border-l-4 border-amber-500 text-amber-700 font-semibold shadow-sm'
+              ? 'bg-gradient-to-r from-amber-50 to-amber-200 border-l-4 border-amber-500 text-amber-700 font-semibold shadow-sm'
               : 'text-gray-900 hover:text-amber-600 font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
@@ -688,7 +797,7 @@ const toggleSidebar = () => {
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
             $route.path.startsWith('/dashboard/reports')
-              ? 'bg-gradient-to-r from-cyan-50 to-cyan-100 border-l-4 border-cyan-500 text-cyan-700 font-semibold shadow-sm'
+              ? 'bg-gradient-to-r from-cyan-50 to-cyan-200 border-l-4 border-cyan-500 text-cyan-700 font-semibold shadow-sm'
               : 'text-gray-900 hover:text-cyan-600 font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
@@ -716,7 +825,7 @@ const toggleSidebar = () => {
           class="w-full px-4 py-3 text-left flex items-center rounded-xl transition-all duration-200 group"
           :class="[
             $route.path.startsWith('/dashboard/security')
-              ? 'bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-500 text-red-700 font-semibold shadow-sm'
+              ? 'bg-gradient-to-r from-red-50 to-red-200 border-l-4 border-red-500 text-red-700 font-semibold shadow-sm'
               : 'text-gray-900 hover:text-red-600 font-medium hover:translate-x-1',
             isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
           ]"
