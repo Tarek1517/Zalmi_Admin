@@ -1,6 +1,7 @@
+import "vue-select/dist/vue-select.css";
+import '@/assets/css/app.css';
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-
 import App from "./App.vue";
 import router from "./router";
 import "vue3-toastify/dist/index.css";
@@ -9,6 +10,8 @@ import Icon from "@/components/Icon.vue";
 import Container from "@/components/Container.vue";
 import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
+
+import VSelect from "vue-select"; // Import vue-select
 
 const app = createApp(App);
 
@@ -19,15 +22,14 @@ app.config.globalProperties.$APP_URL = import.meta.env.VITE_APP_URL;
 app.use(createPinia());
 app.use(router);
 app.use(PrimeVue, {
-  theme: {
-    preset: Aura,
-  },
+  theme: { preset: Aura },
 });
 
 // Global components
 app.component("AppLayout", AppLayout);
 app.component("Icon", Icon);
 app.component("Container", Container);
+app.component("VSelect", VSelect); // Register as VSelect (capital V)
 
 // Mount app
 app.mount("#app");
