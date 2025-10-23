@@ -676,10 +676,9 @@ const toggleSidebar = () => {
                 }"
               >
                 <Icon
-                  name="mdi:city-variant"
-                  class="text-lg text-green-700 flex-shrink-0"
-                />
-                City
+                  name="material-symbols:location-city-rounded"
+                  class="text-lg text-blue-700 flex-shrink-0"
+                />City
               </router-link>
             </li>
             <li>
@@ -691,7 +690,7 @@ const toggleSidebar = () => {
                 }"
               >
                 <Icon
-                  name="material-symbols-light:area-chart-rounded"
+                  name="material-symbols:area-chart-outline-rounded"
                   class="text-lg text-blue-700 flex-shrink-0"
                 />
                 Area
