@@ -676,7 +676,7 @@ const toggleSidebar = () => {
                 }"
               >
                 <Icon
-                  name="solar:slider-vertical-outline"
+                  name="mdi:city-variant"
                   class="text-lg text-green-700 flex-shrink-0"
                 />
                 City
@@ -691,7 +691,7 @@ const toggleSidebar = () => {
                 }"
               >
                 <Icon
-                  name="material-symbols:patient-list"
+                  name="material-symbols-light:area-chart-rounded"
                   class="text-lg text-blue-700 flex-shrink-0"
                 />
                 Area
