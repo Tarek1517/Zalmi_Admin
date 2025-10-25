@@ -479,7 +479,37 @@
             </VSelect>
           </div>
 
-          <div class="w-full">
+          <div class="w-full mt-2">
+            <label
+              for="header-category"
+              class="text-sm font-medium text-gray-700 mb-2 block"
+            >
+              Select Header Categories
+            </label>
+
+            <VSelect
+              v-if="categories"
+              label="name"
+              :options="categories"
+              :reduce="(item) => item.id"
+              v-model="setting.header_categories"
+              multiple
+              class="custom-select"
+            >
+              <template #option="option">
+                <div class="flex items-center gap-3 py-2">
+                  <img
+                    :src="option?.banner_image_url"
+                    class="w-10 h-10 rounded object-cover border border-gray-200"
+                    :alt="option?.name"
+                  />
+                  <span class="text-sm font-medium">{{ option?.name }}</span>
+                </div>
+              </template>
+            </VSelect>
+          </div>
+
+          <div class="w-full mt-2">
             <label
               for="header-category"
               class="text-sm font-medium text-gray-700 mb-2 block"
@@ -895,6 +925,7 @@ const getAllSetting = async () => {
   setting.value.app_url = response.data.app_url;
   setting.value.home_products = response.data.home_products;
   setting.value.home_categories = response.data.home_categories;
+  setting.value.header_categories = response.data.header_categories;
   logoLight.value = response.data.logo_light_url;
   logoDark.value = response.data.logo_dark_url;
   setting.value.twitter_link = response.data.twitter_link;
@@ -973,6 +1004,7 @@ const handleDarkLogo = (image) => {
 const setting = ref({
   home_products: [],
   home_categories: [],
+  header_categories: [],
   home_category: null,
   home_category_2: null,
   currency: null,
